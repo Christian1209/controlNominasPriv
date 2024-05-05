@@ -25,36 +25,43 @@ namespace ProcesadorNominaas
         private string viernesSalida = "-";
         private string viernesTE = "-";
         private float viernesTotal = 0;
+        private float viernesPago = 0;
         private string sabado = "-";
         private string sabadoRetardo = "-";
         private string sabadoSalida = "-";
         private string sabadoTE = "-";
         private float sabadoTotal = 0;
+        private float sabadoPago = 0;
         private string domingo = "-";
         private string domingoRetardo = "-";
         private string domingoSalida = "-";
         private string domingoTE = "-";
         private float domingoTotal = 0;
+        private float domingoPago = 0;
         private string lunes = "-";
         private string lunesRetardo = "-";
         private string lunesSalida = "-";
         private string lunesTE = "-";
+        private string lunesPago = 0;
         private float lunesTotal = 0;
         private string martes = "-";
         private string martesRetardo = "-";
         private string martesSalida = "-";
         private string martesTE = "-";
+        private float martesPago = 0;
         private float martesTotal = 0;
         private string miercoles = "-";
         private string miercolesRetardo = "-";
         private string miercolesSalida = "-";
         private string miercolesTE = "-";
         private float miercolesTotal = 0;
+        private float miercolesPago = 0;
         private string jueves = "-";
         private string juevesRetardo = "-";
         private string juevesSalida = "-";
         private string juevesTE = "-";
         private float juevesTotal = 0;
+        private float juevesPago = 0;
         private int diasTrabajados;
         private int incapacidad;
         private int vacaciones;
@@ -88,6 +95,7 @@ namespace ProcesadorNominaas
         public string Salida { get => salida; set => salida = value; }
         public float SueldoBase { get => sueldoBase; set => sueldoBase = value; }
         public int PorcentajeTe { get => porcentajeTe; set => porcentajeTe = value; }
+        public String Descanso { get => descanso; set => descanso = value; }
         public string Viernes { get => viernes; set => viernes = value; }
         public string ViernesRetardo { get => viernesRetardo; set => viernesRetardo = value; }
         public string ViernesSalida { get => viernesSalida; set => viernesSalida = value; }
@@ -122,10 +130,9 @@ namespace ProcesadorNominaas
         public string JuevesRetardo { get => juevesRetardo; set => juevesRetardo = value; }
         public string JuevesSalida { get => juevesSalida; set => juevesSalida = value; }
         public string JuevesTE { get => juevesTE; set => juevesTE = value; }
-        public int DiasTrabajados { get => diasTrabajados; set => diasTrabajados = value; }
-        public String Descanso { get => descanso; set => descanso = value; }
         public int Incapacidad { get => incapacidad; set => incapacidad = value; }
         public int Vacaciones { get => vacaciones; set => vacaciones = value; }
+        public int DiasTrabajados { get => diasTrabajados; set => diasTrabajados = value; }
         public float TotalDiasPagados { get => totalDiasPagados; set => totalDiasPagados = value; }
         public float TotalPagado { get => totalPagado; set => totalPagado = value; }
         public float TotalDevengando { get => totalDevengando; set => totalDevengando = value; }

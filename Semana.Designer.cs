@@ -48,6 +48,7 @@
             this.DataGridSemana.RowTemplate.Height = 24;
             this.DataGridSemana.Size = new System.Drawing.Size(1516, 707);
             this.DataGridSemana.TabIndex = 1;
+            this.DataGridSemana.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridSemana_CellContentClick);
             // 
             // label1
             // 

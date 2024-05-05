@@ -569,6 +569,7 @@ namespace ProcesadorNominaas
                 empleado.TurnoExtra = ObtenTurnoExtraComida(empleado);
                 empleado.TurnoExtraPaga = ObtenTurnoExtraPaga(empleado);
                 empleado.TotalPagado = ObtenTotalPagado(empleado);
+                empleado.HorasTrabajadas = ObtenHorasTrabajadas(empleado);
             }
             //horas trabaadas y comida ya se obtuvieron.
             //Incidencia
@@ -577,7 +578,13 @@ namespace ProcesadorNominaas
 
         //metodos para procesar empleado
 
-
+        public string ObtenHorasTrabajadas(Empleado empleado)
+        {
+            TimeSpan HoraLlegada = TimeSpan.Parse(empleado.HoraEntrada.ToString());
+            TimeSpan HoraSalida = TimeSpan.Parse(empleado.HoraSalida.ToString());
+            TimeSpan diferencia = HoraLlegada - HoraSalida;
+            return diferencia.ToString(@"hh\:mm\:ss");
+        }
 
 
         public string ObtenDescansoTrabajado(Empleado empleado)
@@ -720,6 +727,7 @@ namespace ProcesadorNominaas
 
         public void ProcesaFalta(Empleado empleado, string fecha)
         {
+            //ahorita no se usa
             //actualiza que perdio descanso en empleados.
             PerdioDescanso(empleado);
             //revisa si ya descansó y modifica su trabajo descanso a no repuso en caso de que no haya trabajado, y si trabajo descanso modifica a repuso.

@@ -403,6 +403,7 @@
     <EmbeddedResource Include="VVacaciones.resx">
       <DependentUpon>VVacaciones.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include=".editorconfig" />
     <None Include="packages.config" />
     <None Include="ProcesadorNominaas_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">

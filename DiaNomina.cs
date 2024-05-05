@@ -35,37 +35,28 @@ namespace ProcesadorNominaas
         private void DiaNomina_Load(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            bool valida = ValidaSemana(dia);
-            if (valida)
-            {
-                //MessageBox.Show("ES VALIDO");
-                //obtener las fechas del dia, de acuerdo a la semana actual.
-                string fecha = ObtenFechaDia(dia);
-                string querySQL = "SELECT" +
-                    "\r\n    Dias.id_empleado AS 'id'," +
-                    "\r\n    " + sucursal + ".Empleados.nombres AS 'Nombre Del Empleado'," +
-                    "\r\n    " + sucursal + ".Dias.fecha AS 'Fecha'," +
-                    "\r\n    " + sucursal + ".Dias.asistencia As 'Asistencia'," +
-                    "\r\n    " + sucursal + ".Dias.retardo AS 'Retardo'," +
-                    "\r\n    " + sucursal + ".Dias.salida AS 'Salida'," +
-                    "\r\n    " + sucursal + ".Dias.turno_extra AS 'T/E'," +
-                    "\r\n    " + sucursal + ".Dias.comida AS 'Comida'," +
-                    "\r\n    " + sucursal + ".Dias.descanso_trabajado AS 'Descanso Trabajado'," +
-                    "\r\n    " + sucursal + ".Dias.horas_trabajadas AS 'Horas Trabajadas'," +
-                    "\r\n    " + sucursal + ".Dias.hora_llegada AS 'Hora LLegada'," +
-                    "\r\n    " + sucursal + ".Dias.hora_salida AS 'Hora Salida'," +
-                    "\r\n    " + sucursal + ".Empleados.entrada As 'Horario Entrada'," +
-                    "\r\n    " + sucursal + ".Empleados.salida AS 'Horario Salida'," +
-                    "\r\n    " + sucursal + ".Empleados.dia_descanso AS 'Dia Descanso'" +
-                    "\r\nFROM " + sucursal + ".Dias" +
-                    "\r\nINNER JOIN " + sucursal + ".Empleados ON " + sucursal + ".Dias.id_empleado = " + sucursal + ".Empleados.id_checador WHERE " + sucursal + ".Dias.fecha = '" + fecha + "'";
-                LlenaDatagrid(querySQL, fecha);
-            }
-            else
-            {
-                MessageBox.Show("El dia que intentas ver aun no es procesado de acuerdo a la semana actual");
-                this.Close();
-            }
+            //MessageBox.Show("ES VALIDO");
+            //obtener las fechas del dia, de acuerdo a la semana actual.
+            string fecha = ObtenFechaDia(dia);
+            string querySQL = "SELECT" +
+                "\r\n    Dias.id_empleado AS 'id'," +
+                "\r\n    " + sucursal + ".Empleados.nombres AS 'Nombre Del Empleado'," +
+                "\r\n    " + sucursal + ".Dias.fecha AS 'Fecha'," +
+                "\r\n    " + sucursal + ".Dias.asistencia As 'Asistencia'," +
+                "\r\n    " + sucursal + ".Dias.retardo AS 'Retardo'," +
+                "\r\n    " + sucursal + ".Dias.salida AS 'Salida'," +
+                "\r\n    " + sucursal + ".Dias.turno_extra AS 'T/E'," +
+                "\r\n    " + sucursal + ".Dias.comida AS 'Comida'," +
+                "\r\n    " + sucursal + ".Dias.descanso_trabajado AS 'Descanso Trabajado'," +
+                "\r\n    " + sucursal + ".Dias.horas_trabajadas AS 'Horas Trabajadas'," +
+                "\r\n    " + sucursal + ".Dias.hora_llegada AS 'Hora Llegada'," +
+                "\r\n    " + sucursal + ".Dias.hora_salida AS 'Hora Salida'," +
+                "\r\n    " + sucursal + ".Empleados.entrada As 'Horario Entrada'," +
+                "\r\n    " + sucursal + ".Empleados.salida AS 'Horario Salida'," +
+                "\r\n    " + sucursal + ".Empleados.dia_descanso AS 'Dia Descanso'" +
+                "\r\nFROM " + sucursal + ".Dias" +
+                "\r\nINNER JOIN " + sucursal + ".Empleados ON " + sucursal + ".Dias.id_empleado = " + sucursal + ".Empleados.id_checador WHERE " + sucursal + ".Dias.fecha = '" + fecha + "'";
+            LlenaDatagrid(querySQL, fecha);
             Cursor.Current = Cursors.Arrow;
         }
 
@@ -108,19 +99,7 @@ namespace ProcesadorNominaas
            
         }
 
-        public bool ValidaSemana(string dia)
-        {
-            DateTime hoy = DateTime.Now;
-
-            int numeroDia = DaNumeroDia(dia);
-            int numeroHoy = DaNumeroDia(hoy.DayOfWeek.ToString());
-            if(numeroHoy - numeroDia  >= 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
+  
 
         public int DaNumeroDia(string dia)
         {
@@ -195,6 +174,7 @@ namespace ProcesadorNominaas
                         // Asignar el DataTable como DataSource del DataGridView
                         DataGridDia.DataSource = dataTable;
                         DataGridDia.CellFormatting += new DataGridViewCellFormattingEventHandler(myDataGridView_CellFormatting);
+                        AdicionalDatagrid();
                     }
    
                 }
@@ -203,6 +183,11 @@ namespace ProcesadorNominaas
                     //MessageBox.Show($"Ocurrió un error al buscar el registro: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        public void AdicionalDatagrid()
+        {
+            
         }
 
         public void myDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

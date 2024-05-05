@@ -23,6 +23,11 @@ namespace ProcesadorNominaas
         private string descanso;
         private string estatus;
         private string perdioDescanso;
+
+        private float sueldoImss = 0;
+        private string turno;
+
+
         //datos que se obtienen del archivo excel.
         private string nombreExcel;
         private string horaEntrada = "0";
@@ -35,20 +40,22 @@ namespace ProcesadorNominaas
         private string turnoExtra = "NO";
         private string turnoExtraPaga = "0";
         private string descansoTrabajado = "NO";
-        private string anotaciones ;
-        private string incidencia ;
+        private string anotaciones;
+        private string incidencia;
         private string horasTrabajadas = "0";
         private string comida = "0";
         private string totalPagado = "0";
         private string salida = "NO";
-        
 
-        public int Id { get => id; set => id = value; } 
+
+        public int Id { get => id; set => id = value; }
         public int IdChecador { get => idChecador; set => idChecador = value; }
         public string Nombre { get => nombre; set => nombre = value; }
         public string Entrada { get => entrada; set => entrada = value; }
         public string Salida { get => salida; set => salida = value; }
         public string EntradaDomingo { get => entradaDomingo; set => entradaDomingo = value; }
+        public float SueldoImss { get => sueldoImss; set => sueldoImss = value; }
+        public string Turno { get => turno; set => turno = value; } 
         public float Sueldo { get => sueldo; set => sueldo = value; }
         public int Bono { get => bono; set => bono = value; }
         public int Porcentaje { get => porcentaje; set => porcentaje = value; }

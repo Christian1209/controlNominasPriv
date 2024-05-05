@@ -30,6 +30,39 @@ namespace ProcesadorNominaas
             this.sucursal = sucursal;
         }
 
+        private void DataGridSemana_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Verifica si el clic ocurrió en la columna de botón
+            if (e.ColumnIndex == DataGridSemana.Columns["Modificar"].Index && e.RowIndex >= 0)
+            {
+
+                MessageBox.Show("Introduce la contraseña" + e.RowIndex);
+
+                DataGridSemana.Rows[e.RowIndex].ReadOnly = false;
+                DataGridSemana.Refresh();   
+
+            }
+            // Verifica si el clic ocurrió en la columna de botón
+            if (e.ColumnIndex == DataGridSemana.Columns["Guardar"].Index && e.RowIndex >= 0)
+            {
+
+                MessageBox.Show("Se guardaron los cambios");
+
+                DataGridSemana.Rows[e.RowIndex].ReadOnly = false;
+                DataGridSemana.Refresh();
+
+            }
+            if (e.ColumnIndex == DataGridSemana.Columns["Guardar"].Index && e.RowIndex >= 0)
+            {
+
+                MessageBox.Show("Se cancelaron los cambios");
+
+                DataGridSemana.Rows[e.RowIndex].ReadOnly = false;
+                DataGridSemana.Refresh();
+
+            }
+        }
+
         public void myDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
 
@@ -55,12 +88,12 @@ namespace ProcesadorNominaas
             c = (DataGridViewButtonColumn)DataGridSemana.Columns["Guardar"];
             c.FlatStyle = FlatStyle.Popup;
             c.DefaultCellStyle.ForeColor = Color.Navy;
-            c.DefaultCellStyle.BackColor = Color.PaleTurquoise;
+            c.DefaultCellStyle.BackColor = Color.Gainsboro;
             c.Text = "G";
             c = (DataGridViewButtonColumn)DataGridSemana.Columns["Cancelar"];
             c.FlatStyle = FlatStyle.Popup;
             c.DefaultCellStyle.ForeColor = Color.Navy;
-            c.DefaultCellStyle.BackColor = Color.LightCoral;
+            c.DefaultCellStyle.BackColor = Color.Gainsboro;
             c.Text = "C";
 
 
@@ -113,6 +146,7 @@ namespace ProcesadorNominaas
                 DataGridSemana.Columns["martesTotal"].Visible = false;
                 DataGridSemana.Columns["miercolesTotal"].Visible = false;
                 DataGridSemana.Columns["juevesTotal"].Visible = false;
+
 
 
                 DataGridSemana.Columns["viernes"].HeaderCell.Value = "V";
@@ -179,7 +213,10 @@ namespace ProcesadorNominaas
                 }
                 this.DataGridSemana.Columns[2].Frozen = true;
 
-
+                foreach (DataGridViewRow row in DataGridSemana.Rows)
+                {
+                    row.ReadOnly = true;
+                }
 
             }
 
@@ -221,13 +258,9 @@ namespace ProcesadorNominaas
 
                 //ya con los dias vamos a hacer los calculos.
                 SemanaClass aux = new SemanaClass();
-                aux.Id = empleado.Id;
-                aux.IdChecador = empleado.IdChecador;
-                aux.Nombre = empleado.Nombre;
-                aux.Entrada = empleado.Entrada;
-                aux.Salida = empleado.SalidaEsperada;
-                aux.PorcentajeTe = empleado.Porcentaje;
-                aux.Descanso = empleado.Descanso;
+                //asignar info del empleado en semana.
+                AsignaInfo();
+
                 ProcesaDia(aux, viernes);
                 ProcesaDia(aux, sabado);
                 ProcesaDia(aux, domingo);
@@ -240,18 +273,55 @@ namespace ProcesadorNominaas
 
                 listaDeSemanas.Add(aux);
                 //nos falta trabajar la entrada de los domingos. cambiar entrada por entrada domingo.
+
+                void AsignaInfo()
+                {
+                    aux.Id = empleado.Id;
+                    aux.IdChecador = empleado.IdChecador;
+                    aux.Nombre = empleado.Nombre;
+                    aux.SueldoImss = empleado.SueldoImss;
+                    aux.Turno = empleado.Turno;
+                    aux.Entrada = empleado.Entrada;
+                    aux.Salida = empleado.SalidaEsperada;
+                    aux.PorcentajeTe = empleado.Porcentaje;
+                    aux.Descanso = empleado.Descanso;
+                    aux.SueldoBase = empleado.Sueldo;
+                    aux.EntradaDomingo = empleado.EntradaDomingo;
+                
+                }
             }
 
+            //modifica latera
+                
 
             void ProcesaPago(SemanaClass semana)
             {
-
-                ProcesaTotal();
+                ProcesaTotalDias();
+                ProcesaTotalPagado();
+                ProcesaTotalDevengado();
                 ProcesaDeducido();
-                semana.TotalPagado2 = semana.TotalPagado - semana.TotalDeducido;
+                semana.TotalPagado2 = semana.TotalDevengando - semana.TotalDeducido;
 
 
-                void ProcesaTotal()
+                void ProcesaTotalDias()
+                {
+
+                }
+                void ProcesaTotalPagado()
+                {
+                    float aux = 0;
+                    aux = aux + semana.;
+                    aux = aux + semana.SabadoTotal;
+                    aux = aux + semana.DomingoTotal;
+                    aux = aux + semana.LunesTotal;
+                    aux = aux + semana.MartesTotal;
+                    aux = aux + semana.MiercolesTotal;
+                    aux = aux + semana.JuevesTotal;
+                    //falta restar descanso etc.
+                    semana.TotalDevengando = aux;
+                }
+
+                void ProcesaTotalDevengado()
                 {
                     float aux = 0;
                     aux = aux + semana.ViernesTotal;
@@ -262,7 +332,7 @@ namespace ProcesadorNominaas
                     aux = aux + semana.MiercolesTotal;
                     aux = aux + semana.JuevesTotal;
                     //falta restar descanso etc.
-                    semana.TotalPagado = aux;
+                    semana.TotalDevengando = aux;
                 }
                 void ProcesaDeducido()
                 {
@@ -361,9 +431,9 @@ namespace ProcesadorNominaas
                 {
                     //caso Jueves
                     semana.Jueves = ProcesaAsistencia(dia);
-                    semana.Jueves = ProcesaRetardo(dia);
-                    semana.Jueves = ProcesaSalida(dia);
-                    semana.Jueves = ProcesaTE(dia);
+                    semana.JuevesRetardo = ProcesaRetardo(dia);
+                    semana.JuevesSalida = ProcesaSalida(dia);
+                    semana.JuevesTE = ProcesaTE(dia);
                     semana.JuevesTotal = dia.Total;
                 }
 
@@ -436,7 +506,9 @@ namespace ProcesadorNominaas
                             auxiliar.Porcentaje = int.Parse(datos.Rows[i]["porcentaje"].ToString());
                             auxiliar.Descanso = datos.Rows[i]["dia_descanso"].ToString();
                             auxiliar.PerdioDescanso = datos.Rows[i]["perdio_descanso"].ToString();
-
+                            auxiliar.Turno = datos.Rows[i]["turno"].ToString();
+                            auxiliar.SueldoImss = float.Parse(datos.Rows[i]["sueldo_imss"].ToString());
+       
                             aux.Add(auxiliar);
                         }
                         connection.Close();
@@ -502,6 +574,8 @@ namespace ProcesadorNominaas
                             diaAux.HorasTrabajadas = datos.Rows[i]["horas_trabajadas"].ToString();
                             diaAux.HoraLlegada = datos.Rows[i]["hora_llegada"].ToString();
                             diaAux.HoraSalida = datos.Rows[i]["hora_salida"].ToString();
+
+
                             diaAux.SueldoDiario = float.Parse(datos.Rows[i]["sueldo_diario"].ToString());
 
                             if(diaAux.Fecha == fechas[0].ToString("yyyy-MM-dd"))

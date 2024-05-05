@@ -42,6 +42,7 @@
             this.DataGridDia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DataGridDia.Location = new System.Drawing.Point(-1, 51);
             this.DataGridDia.Name = "DataGridDia";
+            this.DataGridDia.ReadOnly = true;
             this.DataGridDia.RowHeadersWidth = 51;
             this.DataGridDia.RowTemplate.Height = 24;
             this.DataGridDia.Size = new System.Drawing.Size(1668, 908);
@@ -58,7 +59,7 @@
             this.lblDia.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.lblDia.Location = new System.Drawing.Point(842, 9);
             this.lblDia.Name = "lblDia";
-            this.lblDia.Size = new System.Drawing.Size(0, 36);
+            this.lblDia.Size = new System.Drawing.Size(0, 29);
             this.lblDia.TabIndex = 1;
             // 
             // DiaNomina
