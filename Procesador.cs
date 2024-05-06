@@ -359,7 +359,7 @@ namespace ProcesadorNominaas
             sqlString = sqlString + "'" + empleado.Anotaciones + "'" + ",";
             sqlString = sqlString + "'" + empleado.HorasTrabajadas + "'" + ","; // Corregido typo: de "hoars_trabajadas" a "HorasTrabajadas"
             sqlString = sqlString + "'" + empleado.HoraEntrada + "'" + ",";
-            sqlString = sqlString + "'" + (empleado.Sueldo / 7) + "'" + ",";
+            sqlString = sqlString + "'" + empleado.PagoDiario + "'" + ",";
             sqlString = sqlString + "'" + empleado.HoraSalida + "'"; // Último valor, no lleva coma al final
             sqlString = sqlString + ");"; // Cerramos la sentencia SQL
             using (var connection = new MySqlConnection(conexion)
@@ -570,6 +570,7 @@ namespace ProcesadorNominaas
                 empleado.TurnoExtraPaga = ObtenTurnoExtraPaga(empleado);
                 empleado.TotalPagado = ObtenTotalPagado(empleado);
                 empleado.HorasTrabajadas = ObtenHorasTrabajadas(empleado);
+                
             }
             //horas trabaadas y comida ya se obtuvieron.
             //Incidencia
@@ -716,8 +717,11 @@ namespace ProcesadorNominaas
             if (empleado.HoraEntrada != "0" && empleado.HoraSalida != "0")
             {
                 asistencia = "Asistió";
+                    //aqui evaluar que nos va a generar pago diario. 
+                empleado.PagoDiario = empleado.Sueldo / 7;
                 return asistencia;
             }
+            //aqui vamos a procesar permisos licencias etc hay que hacerle un pago diario siempre que asista o este en licencia.
             if (empleado.Asistencia != "")
                 return asistencia;
             /*if (empleado.PerdioDescanso != "SI")

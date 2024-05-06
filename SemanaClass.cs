@@ -42,7 +42,7 @@ namespace ProcesadorNominaas
         private string lunesRetardo = "-";
         private string lunesSalida = "-";
         private string lunesTE = "-";
-        private string lunesPago = 0;
+        private float lunesPago = 0;
         private float lunesTotal = 0;
         private string martes = "-";
         private string martesRetardo = "-";
@@ -62,6 +62,9 @@ namespace ProcesadorNominaas
         private string juevesTE = "-";
         private float juevesTotal = 0;
         private float juevesPago = 0;
+        //este descanso me sirve para saber si el empleado descanso.
+        private int descanso2;
+        private int diasDescanso;
         private int diasTrabajados;
         private int incapacidad;
         private int vacaciones;
@@ -130,10 +133,18 @@ namespace ProcesadorNominaas
         public string JuevesRetardo { get => juevesRetardo; set => juevesRetardo = value; }
         public string JuevesSalida { get => juevesSalida; set => juevesSalida = value; }
         public string JuevesTE { get => juevesTE; set => juevesTE = value; }
+        public int Descanso2 { get => descanso2; set => descanso2 = value; }
         public int Incapacidad { get => incapacidad; set => incapacidad = value; }
         public int Vacaciones { get => vacaciones; set => vacaciones = value; }
         public int DiasTrabajados { get => diasTrabajados; set => diasTrabajados = value; }
         public float TotalDiasPagados { get => totalDiasPagados; set => totalDiasPagados = value; }
+        public float LunesPago { get => lunesPago; set => lunesPago = value; }
+        public float MartesPago { get => martesPago; set => martesPago = value; }
+        public float MiercolesPago { get => miercolesPago; set => miercolesPago = value; }
+        public float JuevesPago { get => juevesPago; set => juevesPago = value; }
+        public float ViernesPago { get => viernesPago; set => viernesPago = value; }
+        public float SabadoPago { get => sabadoPago; set => sabadoPago = value; }
+        public float DomingoPago { get => domingoPago; set => domingoPago = value; }
         public float TotalPagado { get => totalPagado; set => totalPagado = value; }
         public float TotalDevengando { get => totalDevengando; set => totalDevengando = value; }
         public float DescuentoIncapacidad { get => descuentoIncapacidad; set => descuentoIncapacidad = value; }

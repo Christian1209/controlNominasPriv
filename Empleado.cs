@@ -46,7 +46,7 @@ namespace ProcesadorNominaas
         private string comida = "0";
         private string totalPagado = "0";
         private string salida = "NO";
-
+        private float pagoDiario = 0;
 
         public int Id { get => id; set => id = value; }
         public int IdChecador { get => idChecador; set => idChecador = value; }
@@ -82,8 +82,8 @@ namespace ProcesadorNominaas
 
         public string Estatus { get => estatus; set => estatus = value; }
         public string PerdioDescanso { get => perdioDescanso; set => perdioDescanso = value; }
+        public float PagoDiario { get => pagoDiario; set => pagoDiario = value; }
 
-        
 
 
         public Empleado( int idChecador) {

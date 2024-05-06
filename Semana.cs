@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using NPOI.HSSF.Record.Chart;
 using NPOI.OpenXmlFormats.Dml;
 using NPOI.OpenXmlFormats.Dml.Chart;
 using NPOI.SS.Formula.Functions;
@@ -146,7 +147,13 @@ namespace ProcesadorNominaas
                 DataGridSemana.Columns["martesTotal"].Visible = false;
                 DataGridSemana.Columns["miercolesTotal"].Visible = false;
                 DataGridSemana.Columns["juevesTotal"].Visible = false;
-
+                DataGridSemana.Columns["LunesPago"].Visible = false;
+                DataGridSemana.Columns["MartesPago"].Visible = false;
+                DataGridSemana.Columns["MiercolesPago"].Visible = false;
+                DataGridSemana.Columns["JuevesPago"].Visible = false;
+                DataGridSemana.Columns["ViernesPago"].Visible = false;
+                DataGridSemana.Columns["SabadoPago"].Visible = false;
+                DataGridSemana.Columns["DomingoPago"].Visible = false;
 
 
                 DataGridSemana.Columns["viernes"].HeaderCell.Value = "V";
@@ -183,6 +190,11 @@ namespace ProcesadorNominaas
                 DataGridSemana.Columns["juevesRetardo"].HeaderCell.Value = "JR";
                 DataGridSemana.Columns["juevesSalida"].HeaderCell.Value = "JS";
                 DataGridSemana.Columns["juevesTE"].HeaderCell.Value = "JTE";
+                
+                //cambio de descanso.
+                DataGridSemana.Columns["Descanso"].HeaderCell.Value = "Dia Descanso";
+                DataGridSemana.Columns["Descanso2"].HeaderCell.Value = "Descanso";
+
 
 
 
@@ -293,32 +305,82 @@ namespace ProcesadorNominaas
 
             //modifica latera
                 
+                
 
             void ProcesaPago(SemanaClass semana)
             {
-                ProcesaTotalDias();
+                ProcesaTotalDiasTrabajados();
+                ProcesaDescanso();
                 ProcesaTotalPagado();
                 ProcesaTotalDevengado();
                 ProcesaDeducido();
                 semana.TotalPagado2 = semana.TotalDevengando - semana.TotalDeducido;
 
 
-                void ProcesaTotalDias()
+                void ProcesaDescanso()
                 {
+                    int total = 0; 
+                    if (semana.Lunes == "D" || semana.Lunes == "DT")
+                        total += 1;
+
+                    if (semana.Martes == "D" || semana.Martes == "DT")
+                        total += 1;
+
+                    if (semana.Miercoles == "D" || semana.Miercoles == "DT")
+                        total += 1;
+
+                    if (semana.Jueves == "D" || semana.Jueves == "DT")
+                        total += 1;
+
+                    if (semana.Viernes == "D" || semana.Viernes == "DT")
+                        total += 1;
+
+                    if (semana.Sabado == "D" || semana.Sabado == "DT")
+                        total += 1;
+
+                    if (semana.Domingo == "D" || semana.Domingo == "DT")
+                        total += 1;
+                    semana.Descanso2 = total;
+
+                }
+                void ProcesaTotalDiasTrabajados()
+                {
+                    int total = 0;
+                    if (semana.Lunes == "1" || semana.Lunes == "DT"  )
+                        total += 1;
+
+                    if (semana.Martes == "1" || semana.Martes == "DT" )
+                        total += 1;
+
+                    if (semana.Miercoles == "1" || semana.Miercoles == "DT")
+                        total += 1;
+
+                    if (semana.Jueves == "1" || semana.Jueves == "DT")
+                        total += 1;
+
+                    if (semana.Viernes == "1" || semana.Viernes == "DT")
+                        total += 1;
+
+                    if (semana.Sabado == "1" || semana.Sabado == "DT")
+                        total += 1;
+
+                    if (semana.Domingo == "1" || semana.Domingo == "DT")
+                        total += 1;
+                    semana.DiasTrabajados = total;
 
                 }
                 void ProcesaTotalPagado()
                 {
                     float aux = 0;
-                    aux = aux + semana.;
-                    aux = aux + semana.SabadoTotal;
-                    aux = aux + semana.DomingoTotal;
-                    aux = aux + semana.LunesTotal;
-                    aux = aux + semana.MartesTotal;
-                    aux = aux + semana.MiercolesTotal;
-                    aux = aux + semana.JuevesTotal;
-                    //falta restar descanso etc.
-                    semana.TotalDevengando = aux;
+                    aux = aux + semana.ViernesPago;
+                    aux = aux + semana.SabadoPago;
+                    aux = aux + semana.ViernesPago;
+                    aux = aux + semana.LunesPago;
+                    aux = aux + semana.MartesPago;
+                    aux = aux + semana.MiercolesPago;
+                    aux = aux + semana.JuevesPago;
+      
+                    semana.TotalPagado = aux;
                 }
 
                 void ProcesaTotalDevengado()
@@ -331,9 +393,9 @@ namespace ProcesadorNominaas
                     aux = aux + semana.MartesTotal;
                     aux = aux + semana.MiercolesTotal;
                     aux = aux + semana.JuevesTotal;
-                    //falta restar descanso etc.
                     semana.TotalDevengando = aux;
                 }
+                //FALTAN SALIDAS ETC.
                 void ProcesaDeducido()
                 {
                     float aux = 0;
@@ -380,6 +442,7 @@ namespace ProcesadorNominaas
                     semana.ViernesSalida = ProcesaSalida(dia);
                     semana.ViernesTE = ProcesaTE(dia);
                     semana.ViernesTotal = dia.Total;
+                    semana.ViernesPago = dia.SueldoDiario;
                 }
                 if (fecha.DayOfWeek.ToString() == "Saturday")
                 {
@@ -389,6 +452,7 @@ namespace ProcesadorNominaas
                     semana.SabadoSalida = ProcesaSalida(dia);
                     semana.SabadoTE = ProcesaTE(dia);
                     semana.SabadoTotal = dia.Total;
+                    semana.SabadoPago = dia.SueldoDiario;
 
                 }
                 if (fecha.DayOfWeek.ToString() == "Sunday")
@@ -399,6 +463,7 @@ namespace ProcesadorNominaas
                     semana.DomingoSalida = ProcesaSalida(dia);
                     semana.DomingoTE = ProcesaTE(dia);
                     semana.DomingoTotal = dia.Total;
+                    semana.DomingoPago = dia.SueldoDiario;
                 }
                 if (fecha.DayOfWeek.ToString() == "Monday")
                 {
@@ -408,6 +473,7 @@ namespace ProcesadorNominaas
                     semana.LunesSalida = ProcesaSalida(dia);
                     semana.LunesTE = ProcesaTE(dia);
                     semana.LunesTotal = dia.Total;
+                    semana.LunesPago = dia.SueldoDiario;
                 }
                 if (fecha.DayOfWeek.ToString() == "Tuesday")
                 {
@@ -416,7 +482,8 @@ namespace ProcesadorNominaas
                     semana.MartesRetardo = ProcesaRetardo(dia);
                     semana.MartesSalida = ProcesaSalida(dia);
                     semana.MartesTE = ProcesaTE(dia);
-                    semana.JuevesTotal = dia.Total;
+                    semana.MartesTotal = dia.Total;
+                    semana.MartesPago = dia.SueldoDiario;
                 }
                 if (fecha.DayOfWeek.ToString() == "Wednesday")
                 {
@@ -426,6 +493,7 @@ namespace ProcesadorNominaas
                     semana.MiercolesSalida = ProcesaSalida(dia);
                     semana.MiercolesTE = ProcesaTE(dia);
                     semana.MiercolesTotal = dia.Total;
+                    semana.MiercolesPago = dia.SueldoDiario;
                 }
                 if (fecha.DayOfWeek.ToString() == "Thursday")
                 {
@@ -435,6 +503,7 @@ namespace ProcesadorNominaas
                     semana.JuevesSalida = ProcesaSalida(dia);
                     semana.JuevesTE = ProcesaTE(dia);
                     semana.JuevesTotal = dia.Total;
+                    semana.JuevesPago = dia.Total;
                 }
 
                 String ProcesaAsistencia(Dia diaAux)
@@ -574,8 +643,6 @@ namespace ProcesadorNominaas
                             diaAux.HorasTrabajadas = datos.Rows[i]["horas_trabajadas"].ToString();
                             diaAux.HoraLlegada = datos.Rows[i]["hora_llegada"].ToString();
                             diaAux.HoraSalida = datos.Rows[i]["hora_salida"].ToString();
-
-
                             diaAux.SueldoDiario = float.Parse(datos.Rows[i]["sueldo_diario"].ToString());
 
                             if(diaAux.Fecha == fechas[0].ToString("yyyy-MM-dd"))
