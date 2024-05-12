@@ -295,6 +295,12 @@ namespace ProcesadorNominaas
             DataGridNoRegistrados.Columns.Remove("totalPagado");
             DataGridNoRegistrados.Columns.Remove("salida");
             DataGridNoRegistrados.Columns.Remove("fecha");
+            DataGridNoRegistrados.Columns.Remove("id");
+            DataGridNoRegistrados.Columns.Remove("sueldoImss");
+            DataGridNoRegistrados.Columns.Remove("turno");
+            DataGridNoRegistrados.Columns.Remove("estatus");
+            DataGridNoRegistrados.Columns.Remove("perdioDescanso");
+            DataGridNoRegistrados.Columns.Remove("pagoDiario");
             DataGridNoRegistrados.Columns["idChecador"].Width = 100;
             DataGridNoRegistrados.Columns["nombreExcel"].Width = 300;
             DataGridNoRegistrados.Columns["horaEntrada"].Width = 250;
@@ -707,6 +713,7 @@ namespace ProcesadorNominaas
 
         public string ObtenAsistencia(Empleado empleado, string fecha)
         {
+            //tambien aqui aprovechamos para hacer el pago diario. descanso no genera un pago. 
             if (Descansa(empleado.Fecha, empleado.Descanso))
                 return "Descansó";
 
@@ -722,6 +729,12 @@ namespace ProcesadorNominaas
                 return asistencia;
             }
             //aqui vamos a procesar permisos licencias etc hay que hacerle un pago diario siempre que asista o este en licencia.
+            if(empleado.Asistencia == "Vacacion")
+            {
+                empleado.PagoDiario = empleado.Sueldo / 7;
+                return asistencia;
+            }
+
             if (empleado.Asistencia != "")
                 return asistencia;
             /*if (empleado.PerdioDescanso != "SI")

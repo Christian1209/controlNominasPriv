@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,6 +65,7 @@ namespace ProcesadorNominaas
         private float juevesPago = 0;
         //este descanso me sirve para saber si el empleado descanso.
         private int descanso2;
+        private int descansoT;
         private int diasDescanso;
         private int diasTrabajados;
         private int incapacidad;
@@ -86,6 +88,12 @@ namespace ProcesadorNominaas
         private string totalUniformes;
         private float totalDeducido;
         private float totalPagado2;
+        private float bono;
+        private int diasBono;
+        private float totalBono;
+        private float totalRetardos;
+        private float totalSalidas;
+     
 
         // Getters y Setters
         public int Id { get => id; set => id = value; }
@@ -97,6 +105,7 @@ namespace ProcesadorNominaas
         public string Entrada { get => entrada; set => entrada = value; }
         public string Salida { get => salida; set => salida = value; }
         public float SueldoBase { get => sueldoBase; set => sueldoBase = value; }
+        public float Bono { get => bono; set => bono = value; }
         public int PorcentajeTe { get => porcentajeTe; set => porcentajeTe = value; }
         public String Descanso { get => descanso; set => descanso = value; }
         public string Viernes { get => viernes; set => viernes = value; }
@@ -134,9 +143,13 @@ namespace ProcesadorNominaas
         public string JuevesSalida { get => juevesSalida; set => juevesSalida = value; }
         public string JuevesTE { get => juevesTE; set => juevesTE = value; }
         public int Descanso2 { get => descanso2; set => descanso2 = value; }
+        public int DescansoT { get => descansoT; set => descansoT = value; }
+        public int DiasDescanso { get => diasDescanso; set => diasDescanso = value; }
         public int Incapacidad { get => incapacidad; set => incapacidad = value; }
         public int Vacaciones { get => vacaciones; set => vacaciones = value; }
         public int DiasTrabajados { get => diasTrabajados; set => diasTrabajados = value; }
+        public int DiasBono { get => diasBono; set => diasBono = value; }
+        public float BonoTotal { get => bono; set => bono = value; }
         public float TotalDiasPagados { get => totalDiasPagados; set => totalDiasPagados = value; }
         public float LunesPago { get => lunesPago; set => lunesPago = value; }
         public float MartesPago { get => martesPago; set => martesPago = value; }
@@ -160,15 +173,21 @@ namespace ProcesadorNominaas
         public string Cubreboca { get => cubreboca; set => cubreboca = value; }
         public string Trapo { get => trapo; set => trapo = value; }
         public string TotalUniformes { get => totalUniformes; set => totalUniformes = value; }
+        public float TotalRetardos { get => totalRetardos; set => totalRetardos = value; }
+        public float TotalSalidas { get => totalSalidas; set => totalSalidas = value; }
         public float TotalDeducido { get => totalDeducido; set => totalDeducido = value; }
+        public float TotalPagado2 { get => totalPagado2; set => totalPagado2 = value; }
+
+
+
+        //no se muestran 
         public float LunesTotal { get => lunesTotal; set => lunesTotal = value; }
         public float MartesTotal { get => martesTotal; set => martesTotal = value; }
         public float MiercolesTotal { get => miercolesTotal; set => miercolesTotal = value; }
         public float JuevesTotal { get => juevesTotal; set => juevesTotal = value; }
         public float ViernesTotal { get => viernesTotal; set => viernesTotal = value; }
         public float SabadoTotal { get => sabadoTotal; set => sabadoTotal = value; }
-        public float DomingoTotal {  get => domingoTotal; set => domingoTotal = value; }
-        public float TotalPagado2 { get => totalPagado2; set => totalPagado2 = value; }
+        public float DomingoTotal { get => domingoTotal; set => domingoTotal = value; }
 
     }
 }

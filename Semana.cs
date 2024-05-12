@@ -281,6 +281,7 @@ namespace ProcesadorNominaas
                 ProcesaDia(aux, miercoles);
                 ProcesaDia(aux, jueves);
                 //Falta procesar el pago semanal.
+                aux.Bono = empleado.Bono;
                 ProcesaPago(aux);
 
                 listaDeSemanas.Add(aux);
@@ -312,65 +313,153 @@ namespace ProcesadorNominaas
                 ProcesaTotalDiasTrabajados();
                 ProcesaDescanso();
                 ProcesaTotalPagado();
+                ProcesaBono();
                 ProcesaTotalDevengado();
                 ProcesaDeducido();
+                DiasDescanso();
+                //hacer descansos
+                ProcesaDiasPagados();
                 semana.TotalPagado2 = semana.TotalDevengando - semana.TotalDeducido;
 
+                void ProcesaDiasPagados()
+                {
+                    if (semana.IdChecador == 12)
+                        Console.WriteLine("a");
 
+                    int total = 0;
+                    if (CuentaDia(semana.Lunes))
+                        total = total + 1;
+                    if (CuentaDia(semana.Martes))
+                        total = total + 1;
+                    if (CuentaDia(semana.Miercoles))
+                        total = total + 1;
+                    if (CuentaDia(semana.Jueves))
+                        total = total + 1;
+                    if (CuentaDia(semana.Viernes))
+                        total = total + 1;
+                    if (CuentaDia(semana.Sabado))
+                        total = total + 1;
+                    if (CuentaDia(semana.Domingo))
+                        total = total + 1;
+                    semana.TotalDiasPagados = total;
+                }
+
+                void DiasDescanso()
+                {
+
+                    if (Falta())
+                    {
+                        semana.DiasDescanso = 0;
+                        return;
+                    }
+
+                    int total = 0;
+                    if (PagaDescanso(semana.Lunes))
+                        total = total + 1;
+                    if (PagaDescanso(semana.Martes))
+                        total = total + 1;
+                    if (PagaDescanso(semana.Miercoles))
+                        total = total + 1;
+                    if (PagaDescanso(semana.Jueves))
+                        total = total + 1;
+                    if (PagaDescanso(semana.Viernes))
+                        total = total + 1;
+                    if (PagaDescanso(semana.Sabado))
+                        total = total + 1;
+                    if (PagaDescanso(semana.Domingo))
+                        total = total + 1;
+                    semana.DiasDescanso = total;
+                    //si falta pierde descanso!
+
+
+                }
+
+
+                
                 void ProcesaDescanso()
                 {
                     int total = 0; 
-                    if (semana.Lunes == "D" || semana.Lunes == "DT")
+
+                    if (semana.Lunes == "D")
+                        total += 1;
+                    if (semana.Martes == "D" )
                         total += 1;
 
-                    if (semana.Martes == "D" || semana.Martes == "DT")
+                    if (semana.Miercoles == "D")
                         total += 1;
 
-                    if (semana.Miercoles == "D" || semana.Miercoles == "DT")
+                    if (semana.Jueves == "D")
                         total += 1;
 
-                    if (semana.Jueves == "D" || semana.Jueves == "DT")
+                    if (semana.Viernes == "D" )
                         total += 1;
 
-                    if (semana.Viernes == "D" || semana.Viernes == "DT")
+                    if (semana.Sabado == "D")
                         total += 1;
 
-                    if (semana.Sabado == "D" || semana.Sabado == "DT")
+                    if (semana.Domingo == "D")
                         total += 1;
 
-                    if (semana.Domingo == "D" || semana.Domingo == "DT")
-                        total += 1;
                     semana.Descanso2 = total;
+                    total = 0;
+
+                    if (semana.Lunes == "DT")
+                        total += 1;
+
+                    if (semana.Martes == "DT")
+                        total += 1;
+
+                    if (semana.Miercoles == "DT")
+                        total += 1;
+
+                    if (semana.Jueves == "DT")
+                        total += 1;
+
+                    if (semana.Viernes == "DT")
+                        total += 1;
+
+                    if (semana.Sabado == "DT")
+                        total += 1;
+
+                    if (semana.Domingo == "DT")
+                        total += 1;
+
+                    semana.DescansoT = total;
 
                 }
                 void ProcesaTotalDiasTrabajados()
                 {
                     int total = 0;
-                    if (semana.Lunes == "1" || semana.Lunes == "DT"  )
+                    if (semana.Lunes == "1")
                         total += 1;
 
-                    if (semana.Martes == "1" || semana.Martes == "DT" )
+                    if (semana.Martes == "1")
                         total += 1;
 
-                    if (semana.Miercoles == "1" || semana.Miercoles == "DT")
+                    if (semana.Miercoles == "1")
                         total += 1;
 
-                    if (semana.Jueves == "1" || semana.Jueves == "DT")
+                    if (semana.Jueves == "1")
                         total += 1;
 
-                    if (semana.Viernes == "1" || semana.Viernes == "DT")
+                    if (semana.Viernes == "1")
                         total += 1;
 
-                    if (semana.Sabado == "1" || semana.Sabado == "DT")
+                    if (semana.Sabado == "1")
                         total += 1;
 
-                    if (semana.Domingo == "1" || semana.Domingo == "DT")
+                    if (semana.Domingo == "1")
                         total += 1;
                     semana.DiasTrabajados = total;
 
                 }
                 void ProcesaTotalPagado()
                 {
+                    float descanso = 0;
+                    if (semana.Descanso2 == 1 || semana.DescansoT == 1)
+                    {
+                        descanso = ((semana.SueldoBase / 7) / 6) * semana.DiasTrabajados;
+                    }
                     float aux = 0;
                     aux = aux + semana.ViernesPago;
                     aux = aux + semana.SabadoPago;
@@ -380,12 +469,13 @@ namespace ProcesadorNominaas
                     aux = aux + semana.MiercolesPago;
                     aux = aux + semana.JuevesPago;
       
-                    semana.TotalPagado = aux;
+                    semana.TotalPagado = aux + descanso;
                 }
 
                 void ProcesaTotalDevengado()
                 {
-                    float aux = 0;
+
+                    float aux = semana.TotalDevengando;
                     aux = aux + semana.ViernesTotal;
                     aux = aux + semana.SabadoTotal;
                     aux = aux + semana.DomingoTotal;
@@ -394,8 +484,21 @@ namespace ProcesadorNominaas
                     aux = aux + semana.MiercolesTotal;
                     aux = aux + semana.JuevesTotal;
                     semana.TotalDevengando = aux;
+
                 }
                 //FALTAN SALIDAS ETC.
+
+                void ProcesaBono(){
+                    if (Falta())
+                    {
+                        semana.DiasBono = 0;
+                        semana.BonoTotal = 0;
+                        return;
+                    }
+                    semana.DiasBono = semana.DiasTrabajados;
+                    semana.Bono = (semana.Bono / 6) * semana.DiasBono;
+                }
+
                 void ProcesaDeducido()
                 {
                     float aux = 0;
@@ -403,26 +506,77 @@ namespace ProcesadorNominaas
                         aux = aux + 100;
                     if (semana.LunesRetardo == "1")
                         aux = aux + 100;
-
                     if (semana.MartesRetardo == "1")
                         aux = aux + 100;
-
                     if (semana.MiercolesRetardo == "1")
                         aux = aux + 100;
-
                     if (semana.JuevesRetardo == "1")
                         aux = aux + 100;
-
                     if (semana.ViernesRetardo == "1")
                         aux = aux + 100;
-
                     if (semana.SabadoRetardo == "1")
                         aux = aux + 100;
-
                     if (semana.DomingoRetardo == "1")
                         aux = aux + 100;
-                    //falta restar descanso etc.
+
+                    semana.TotalRetardos = aux;
+
+                    if (semana.ViernesSalida == "1")
+                        aux = aux + 100;
+                    if (semana.LunesSalida == "1")
+                        aux = aux + 100;
+                    if (semana.MartesSalida == "1")
+                        aux = aux + 100;
+                    if (semana.MiercolesSalida == "1")
+                        aux = aux + 100;
+                    if (semana.JuevesSalida == "1")
+                        aux = aux + 100;
+                    if (semana.ViernesSalida == "1")
+                        aux = aux + 100;
+                    if (semana.SabadoSalida == "1")
+                        aux = aux + 100;
+                    if (semana.DomingoSalida == "1")
+                        aux = aux + 100;
+
+                    semana.TotalSalidas = aux - semana.TotalRetardos;
+
+
+
                     semana.TotalDeducido = aux;
+                }
+
+                bool CuentaDia(string asistencia)
+                {
+                    if (asistencia == "1" || asistencia == "V" || asistencia == "LP" || asistencia == "LF" || asistencia == "DT")
+                        return true;
+                    return false;
+
+                }
+
+                bool PagaDescanso(string asistencia)
+                {
+                    if (asistencia == "1" || asistencia == "V" || asistencia == "LP" || asistencia == "LF")
+                        return true;
+                    return false;
+
+                }
+                bool Falta()
+                {
+                    if (semana.Lunes == "F")
+                        return true;
+                    if (semana.Martes == "F")
+                        return true;
+                    if (semana.Miercoles == "F")
+                        return true;
+                    if (semana.Jueves == "F")
+                        return true;
+                    if (semana.Viernes == "F")
+                        return true;
+                    if (semana.Sabado == "F")
+                        return true;
+                    if (semana.Domingo == "F")
+                        return true;
+                    return false;
                 }
             }
 
@@ -503,7 +657,7 @@ namespace ProcesadorNominaas
                     semana.JuevesSalida = ProcesaSalida(dia);
                     semana.JuevesTE = ProcesaTE(dia);
                     semana.JuevesTotal = dia.Total;
-                    semana.JuevesPago = dia.Total;
+                    semana.JuevesPago = dia.SueldoDiario;
                 }
 
                 String ProcesaAsistencia(Dia diaAux)
@@ -577,7 +731,7 @@ namespace ProcesadorNominaas
                             auxiliar.PerdioDescanso = datos.Rows[i]["perdio_descanso"].ToString();
                             auxiliar.Turno = datos.Rows[i]["turno"].ToString();
                             auxiliar.SueldoImss = float.Parse(datos.Rows[i]["sueldo_imss"].ToString());
-       
+                            
                             aux.Add(auxiliar);
                         }
                         connection.Close();
