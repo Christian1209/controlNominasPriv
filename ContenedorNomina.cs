@@ -63,7 +63,7 @@ namespace ProcesadorNominaas
 
         private void BtnSemana_Click(object sender, EventArgs e)
         {
-            Semana form1 = new Semana(sucursal);
+            Semana form1 = new Semana(sucursal, false);
             form1.ShowDialog();
         }
     }

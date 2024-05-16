@@ -37,6 +37,7 @@
             this.BtnDomingo = new FontAwesome.Sharp.IconButton();
             this.iconButton7 = new FontAwesome.Sharp.IconButton();
             this.BtnSemana = new FontAwesome.Sharp.IconButton();
+            this.BtnSemanaAnterior = new FontAwesome.Sharp.IconButton();
             this.SuspendLayout();
             // 
             // BtnLunes
@@ -160,7 +161,7 @@
             this.iconButton7.IconColor = System.Drawing.Color.White;
             this.iconButton7.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.iconButton7.IconSize = 20;
-            this.iconButton7.Location = new System.Drawing.Point(430, 590);
+            this.iconButton7.Location = new System.Drawing.Point(749, 590);
             this.iconButton7.Name = "iconButton7";
             this.iconButton7.Size = new System.Drawing.Size(297, 112);
             this.iconButton7.TabIndex = 52;
@@ -184,12 +185,29 @@
             this.BtnSemana.UseVisualStyleBackColor = false;
             this.BtnSemana.Click += new System.EventHandler(this.BtnSemana_Click);
             // 
+            // BtnSemanaAnterior
+            // 
+            this.BtnSemanaAnterior.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(150)))), ((int)(((byte)(243)))));
+            this.BtnSemanaAnterior.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnSemanaAnterior.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.BtnSemanaAnterior.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.BtnSemanaAnterior.IconColor = System.Drawing.Color.White;
+            this.BtnSemanaAnterior.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.BtnSemanaAnterior.IconSize = 20;
+            this.BtnSemanaAnterior.Location = new System.Drawing.Point(430, 590);
+            this.BtnSemanaAnterior.Name = "BtnSemanaAnterior";
+            this.BtnSemanaAnterior.Size = new System.Drawing.Size(297, 112);
+            this.BtnSemanaAnterior.TabIndex = 54;
+            this.BtnSemanaAnterior.Text = "Semana Anterior";
+            this.BtnSemanaAnterior.UseVisualStyleBackColor = false;
+            // 
             // ContenedorNomina
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(1089, 850);
+            this.Controls.Add(this.BtnSemanaAnterior);
             this.Controls.Add(this.BtnSemana);
             this.Controls.Add(this.iconButton7);
             this.Controls.Add(this.BtnDomingo);
@@ -216,5 +234,6 @@
         private FontAwesome.Sharp.IconButton BtnDomingo;
         private FontAwesome.Sharp.IconButton iconButton7;
         private FontAwesome.Sharp.IconButton BtnSemana;
+        private FontAwesome.Sharp.IconButton BtnSemanaAnterior;
     }
 }

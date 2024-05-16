@@ -71,28 +71,28 @@ namespace ProcesadorNominaas
         private int incapacidad;
         private int vacaciones;
         private float totalDiasPagados;
-        private float totalPagado;
-        private float totalDevengando;
-        private float descuentoIncapacidad;
-        private float nominaFiscal;
-        private float multa;
-        private float multa2;
-        private string cantidadPresamo;
-        private string cantidadAbono;
-        private string saldoPrestamo;
-        private string cantidadHerramienta;
-        private string abonoHerramienta;
-        private string gorra;
-        private string cubreboca;
-        private string trapo;
-        private string totalUniformes;
-        private float totalDeducido;
-        private float totalPagado2;
+        private float totalPagado = 0;
+        private float totalDevengando = 0;
+        private float descuentoIncapacidad = 0;
+        private float nominaFiscal = 0;
+        private float multa = 0;
+        private float multa2 = 0;
+        private string cantidadPrestamo = "0";
+        private string cantidadAbono = "0";
+        private string saldoPrestamo = "0";
+        private string cantidadHerramienta = "0";
+        private string abonoHerramienta = "0";
+        private string gorra = "0";
+        private string cubreboca = "0";
+        private string trapo = "0";
+        private string totalUniformes = "0";
+        private float totalDeducido = 0;
+        private float totalPagado2 = 0;
         private float bono;
-        private int diasBono;
-        private float totalBono;
-        private float totalRetardos;
-        private float totalSalidas;
+        private int diasBono = 0;
+        private float totalBono = 0;
+        private float totalRetardos = 0;
+        private float totalSalidas = 0;
      
 
         // Getters y Setters
@@ -164,7 +164,7 @@ namespace ProcesadorNominaas
         public float NominaFiscal { get => nominaFiscal; set => nominaFiscal = value; }
         public float Multa { get => multa; set => multa = value; }
         public float Multa2 { get => multa2; set => multa2 = value; }
-        public string CantidadPresamo { get => cantidadPresamo; set => cantidadPresamo = value; }
+        public string CantidadPrestamo { get => cantidadPrestamo; set => cantidadPrestamo = value; }
         public string CantidadAbono { get => cantidadAbono; set => cantidadAbono = value; }
         public string SaldoPrestamo { get => saldoPrestamo; set => saldoPrestamo = value; }
         public string CantidadHerramienta { get => cantidadHerramienta; set => cantidadHerramienta = value; }

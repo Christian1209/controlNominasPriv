@@ -175,14 +175,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ProcesadorNominas.exe" size="331232">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ProcesadorNominas.exe" size="339424">
       <assemblyIdentity name="ProcesadorNominas" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>CeOFTfSavrcOfadasuMwJ2HXtEMGF4yWHQtqw9qxS8s=</dsig:DigestValue>
+        <dsig:DigestValue>B6bjgmIlI4ZQK6oYXjgyjJggB5SEZ2Eb7+nrxopFWg8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

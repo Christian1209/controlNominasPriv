@@ -115,6 +115,9 @@ namespace ProcesadorNominaas
                         bool seProceso = SeProcesoAnterior(fecha);
                         if(seProceso)
                         {
+                            //asi resuelvo  la entrada al domingo.
+                            if (dia == "DOMINGO")
+                                CambiaADomingo();
                             bool existe = BuscarFecha(fecha);
                             if (existe)
                             {
@@ -145,6 +148,12 @@ namespace ProcesadorNominaas
             }
             Cursor.Current = Cursors.Arrow;
 
+        }
+
+        public void CambiaADomingo()
+        {
+            foreach (Empleado empleado in empleadosBdd)
+                empleado.Entrada = empleado.EntradaDomingo;
         }
 
         public bool SeProcesoAnterior(string fecha)
@@ -350,14 +359,13 @@ namespace ProcesadorNominaas
 
         public void InsertaCambios(Empleado empleado)
         {
-            string sqlString = "INSERT INTO " + sucursal + ".Dias (id_empleado,fecha,asistencia,retardo,salida,turno_extra,comida,turno_extra_paga,total,incidencia,descanso_trabajado,anotaciones,horas_trabajadas,hora_llegada,sueldo_diario,hora_salida) VALUES (";
+            string sqlString = "INSERT INTO " + sucursal + ".Dias (id_empleado,fecha,asistencia,retardo,salida,turno_extra,turno_extra_paga,total,incidencia,descanso_trabajado,anotaciones,horas_trabajadas,hora_llegada,sueldo_diario,hora_salida) VALUES (";
             sqlString = sqlString + "'" + empleado.IdChecador + "'" + ",";
             sqlString = sqlString + "'" + empleado.Fecha + "'" + ",";
             sqlString = sqlString + "'" + empleado.Asistencia + "'" + ",";
             sqlString = sqlString + "'" + empleado.Retardo + "'" + ",";
             sqlString = sqlString + "'" + empleado.Salida + "'" + ",";
             sqlString = sqlString + "'" + empleado.TurnoExtra + "'" + ",";
-            sqlString = sqlString + "'" + empleado.Comida + "'" + ",";
             sqlString = sqlString + "'" + empleado.TurnoExtraPaga + "'" + ",";
             sqlString = sqlString + "'" + empleado.TotalPagado + "'" + ",";
             sqlString = sqlString + "'" + empleado.Incidencia + "'" + ",";
@@ -368,8 +376,7 @@ namespace ProcesadorNominaas
             sqlString = sqlString + "'" + empleado.PagoDiario + "'" + ",";
             sqlString = sqlString + "'" + empleado.HoraSalida + "'"; // Último valor, no lleva coma al final
             sqlString = sqlString + ");"; // Cerramos la sentencia SQL
-            using (var connection = new MySqlConnection(conexion)
-               )
+            using (var connection = new MySqlConnection(conexion))
             {
                 try
                 {
@@ -645,15 +652,12 @@ namespace ProcesadorNominaas
                 salida = DateTime.Parse(empleado.HoraSalida);
                 TimeSpan diferencia = salida.TimeOfDay - entrada.TimeOfDay;
                 empleado.HorasTrabajadas = diferencia.ToString();
+                //Procesar con variable de hora el turno extra.
                 if (diferencia.TotalHours > 13.3)
                 {
-                    //Aqui procesar los turnos para pagar turno extra dependiendo de su horario. 
-                    empleado.Comida = "60";
                     return "SI";
                 }
             }
-            if (empleado.HoraEntrada != "0" && empleado.HoraSalida != "0")
-                empleado.Comida = "30";    
             return "NO";
         }
 

@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Irony.Parsing;
+using MySql.Data.MySqlClient;
 using NPOI.HSSF.Record.Chart;
 using NPOI.OpenXmlFormats.Dml;
 using NPOI.OpenXmlFormats.Dml.Chart;
@@ -24,11 +25,13 @@ namespace ProcesadorNominaas
 
         string conexion = ("Server=monorail.proxy.rlwy.net;Port=15455;Database=railway;Uid=root;password=HBFHC45b5A2BE4a552G-Cf13AeEA-DFE;");
         string sucursal = "";
-
-        public Semana(string sucursal)
+        bool anterior = false;
+        bool semanaPagada = false;
+        public Semana(string sucursal, bool anterior)
         {
             InitializeComponent();
             this.sucursal = sucursal;
+            this.anterior = anterior;
         }
 
         private void DataGridSemana_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -53,7 +56,7 @@ namespace ProcesadorNominaas
                 DataGridSemana.Refresh();
 
             }
-            if (e.ColumnIndex == DataGridSemana.Columns["Guardar"].Index && e.RowIndex >= 0)
+            if (e.ColumnIndex == DataGridSemana.Columns["Cancelar"].Index && e.RowIndex >= 0)
             {
 
                 MessageBox.Show("Se cancelaron los cambios");
@@ -62,6 +65,137 @@ namespace ProcesadorNominaas
                 DataGridSemana.Refresh();
 
             }
+            if (e.ColumnIndex == DataGridSemana.Columns["Imprimir"].Index && e.RowIndex >= 0)
+            {
+
+                MessageBox.Show("Se generó el archivo");
+
+                DataGridSemana.Rows[e.RowIndex].ReadOnly = false;
+                DataGridSemana.Refresh();
+
+            }
+            if (e.ColumnIndex == DataGridSemana.Columns["Pagado"].Index && e.RowIndex >= 0)
+            {
+
+
+                //aqui lo que voy a hacer es que si es jueves o semana anterior cargue la semana a la base de datos, para no cargarla siempre que se genere
+                if (EsJueves() || anterior == true)
+                {
+                    MessageBox.Show("¿Seguro que quieres pagar?");
+                    if (semanaPagada == false)
+                        CargaSemana(DataGridSemana);
+                }
+                else
+                {
+                    MessageBox.Show("La semana no ha terminado, espera al Jueves para pagar.");
+                }
+
+                DataGridSemana.Refresh();
+
+            }
+
+
+            bool EsJueves()
+            {
+                DateTime fechaActual = DateTime.Today;
+                if (fechaActual.DayOfWeek.ToString() == "Thursday")
+                    return true;
+                return false;
+            }
+
+            void CargaSemana(DataGridView DataGrid)
+            {
+                foreach(DataGridViewRow row in DataGrid.Rows)
+                {
+                    string sqlString = "INSERT INTO " + sucursal + ".Semanas (id_checador,id_empleado,nombre,sueldo_imss,turno,entrada_domingo,entrada,salida,sueldo_base,bono,porcentaje_te,dia_descanso,v,vr,vs,dte,mte,jte,cantidad_abono,vte,s,sr,ss,ste,d,dr,ds,l,lr,ls,lte,m,mr,ms,x,xr,xs,xte,j,jr,js,descanso,descanso_t,dias_descanso,incapacidad,vacaciones,dias_trabajados,dias_bono,bono_total,total_dias_pagados,total_pagado,total_devengado,descuento_incapacidad,nomina_fiscal,multa,multa2,cantidad_prestamo,saldo_prestamo,cantidad_herramienta,abono_herramienta,gorra,trapo,total_uniformes,total_retardos,total_salidas,total_deducido,total_pagado2,semana_pagada\r\n) VALUES (";
+                    sqlString = sqlString + "'" + row.Cells["Id_C"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Id"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Nombre"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["SueldoImss"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Turno"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["EntradaDomingo"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Entrada"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Salida"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["SueldoBase"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Bono"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["%TE"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Dia Descanso"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["V"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["VR"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["VS"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["DTE"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["MTE"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["JTE"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["CantidadAbono"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["VTE"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["S"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["SR"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["SS"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["STE"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["D"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["DR"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["DS"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["L"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["LR"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["LS"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["LTE"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["M"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["MR"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["MS"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["X"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["XR"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["XS"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["XTE"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["J"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["JR"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["JS"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Descanso"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["DescansoT"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["DiasDescanso"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Incapacidad"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Vacaciones"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["DiasTrabajados"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["DiasBono"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["BonoTotal"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["TotalDiasPagados"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["TotalPagado"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["TotalDevengando"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["DescuentoIncapacidad"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["NominaFiscal"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Multa"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Multa2"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["CantidadPrestamo"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["SaldoPrestamo"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["CantidadHerramienta"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["AbonoHerramienta"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Gorra"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["Trapo"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["TotalUniformes"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["TotalRetardos"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["TotalSalidas"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["TotalDeducido"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["TotalPagado2"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + "NO" + "'"; // Último valor, no lleva coma al final
+                    sqlString = sqlString + ");"; // Cerramos la sentencia SQL
+                    using (var connection = new MySqlConnection(conexion))
+                    {
+                        try
+                        {
+                            connection.Open();
+
+                            MySqlCommand comando = new MySqlCommand(sqlString, connection);
+                            comando.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error: " + ex.Message);
+                        }
+                    }
+                }
+                return;
+            }
+
         }
 
         public void myDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -96,6 +230,16 @@ namespace ProcesadorNominaas
             c.DefaultCellStyle.ForeColor = Color.Navy;
             c.DefaultCellStyle.BackColor = Color.Gainsboro;
             c.Text = "C";
+            c = (DataGridViewButtonColumn)DataGridSemana.Columns["Imprimir"];
+            c.FlatStyle = FlatStyle.Popup;
+            c.DefaultCellStyle.ForeColor = Color.Navy;
+            c.DefaultCellStyle.BackColor = Color.Gainsboro;
+            c.Text = "I";
+            c = (DataGridViewButtonColumn)DataGridSemana.Columns["Pagado"];
+            c.FlatStyle = FlatStyle.Popup;
+            c.DefaultCellStyle.ForeColor = Color.Navy;
+            c.DefaultCellStyle.BackColor = Color.Gainsboro;
+            c.Text = "P";
 
 
             //colores headers.
@@ -131,13 +275,19 @@ namespace ProcesadorNominaas
             ProcesaListaSemanas();
             CargaGrid();
 
+
+
+
             void CargaGrid()
             {
                 DataGridSemana.DataSource = null;
                 DataGridSemana.DataSource = listaDeSemanas;
 
                 DataGridSemana.Columns["idChecador"].HeaderCell.Value = "Id_C";
+                DataGridSemana.Columns["idChecador"].Name = "Id_C";
+
                 DataGridSemana.Columns["porcentajeTe"].HeaderCell.Value = "%TE";
+                DataGridSemana.Columns["porcentajeTe"].Name = "%TE";
 
                 //oculto totales de cada semana
                 DataGridSemana.Columns["viernesTotal"].Visible = false;
@@ -157,43 +307,73 @@ namespace ProcesadorNominaas
 
 
                 DataGridSemana.Columns["viernes"].HeaderCell.Value = "V";
+                DataGridSemana.Columns["viernes"].Name = "V";
                 DataGridSemana.Columns["viernesRetardo"].HeaderCell.Value = "VR";
+                DataGridSemana.Columns["viernesRetardo"].Name = "VR";
                 DataGridSemana.Columns["viernesSalida"].HeaderCell.Value = "VS";
+                DataGridSemana.Columns["viernesSalida"].Name = "VS";
                 DataGridSemana.Columns["viernesTE"].HeaderCell.Value = "VTE";
+                DataGridSemana.Columns["viernesTE"].Name = "VTE";
 
                 DataGridSemana.Columns["sabado"].HeaderCell.Value = "S";
+                DataGridSemana.Columns["sabado"].Name = "S";
                 DataGridSemana.Columns["sabadoRetardo"].HeaderCell.Value = "SR";
+                DataGridSemana.Columns["sabadoRetardo"].Name = "SR";
                 DataGridSemana.Columns["sabadoSalida"].HeaderCell.Value = "SS";
+                DataGridSemana.Columns["sabadoSalida"].Name = "SS";
                 DataGridSemana.Columns["sabadoTE"].HeaderCell.Value = "STE";
+                DataGridSemana.Columns["sabadoTE"].Name = "STE";
 
                 DataGridSemana.Columns["domingo"].HeaderCell.Value = "D";
+                DataGridSemana.Columns["domingo"].Name = "D";
                 DataGridSemana.Columns["domingoRetardo"].HeaderCell.Value = "DR";
+                DataGridSemana.Columns["domingoRetardo"].Name = "DR";
                 DataGridSemana.Columns["domingoSalida"].HeaderCell.Value = "DS";
+                DataGridSemana.Columns["domingoSalida"].Name = "DS";
                 DataGridSemana.Columns["domingoTE"].HeaderCell.Value = "DTE";
+                DataGridSemana.Columns["domingoTE"].Name = "DTE";
 
                 DataGridSemana.Columns["lunes"].HeaderCell.Value = "L";
+                DataGridSemana.Columns["lunes"].Name = "L";
                 DataGridSemana.Columns["lunesRetardo"].HeaderCell.Value = "LR";
+                DataGridSemana.Columns["lunesRetardo"].Name = "LR";
                 DataGridSemana.Columns["lunesSalida"].HeaderCell.Value = "LS";
+                DataGridSemana.Columns["lunesSalida"].Name = "LS";
                 DataGridSemana.Columns["lunesTE"].HeaderCell.Value = "LTE";
+                DataGridSemana.Columns["lunesTE"].Name = "LTE";
 
                 DataGridSemana.Columns["martes"].HeaderCell.Value = "M";
+                DataGridSemana.Columns["martes"].Name = "M";
                 DataGridSemana.Columns["martesRetardo"].HeaderCell.Value = "MR";
+                DataGridSemana.Columns["martesRetardo"].Name = "MR";
                 DataGridSemana.Columns["martesSalida"].HeaderCell.Value = "MS";
+                DataGridSemana.Columns["martesSalida"].Name = "MS";
                 DataGridSemana.Columns["martesTE"].HeaderCell.Value = "MTE";
+                DataGridSemana.Columns["martesTE"].Name = "MTE";
 
                 DataGridSemana.Columns["miercoles"].HeaderCell.Value = "X";
+                DataGridSemana.Columns["miercoles"].Name = "X";
                 DataGridSemana.Columns["miercolesRetardo"].HeaderCell.Value = "XR";
+                DataGridSemana.Columns["miercolesRetardo"].Name = "XR";
                 DataGridSemana.Columns["miercolesSalida"].HeaderCell.Value = "XS";
+                DataGridSemana.Columns["miercolesSalida"].Name = "XS";
                 DataGridSemana.Columns["miercolesTE"].HeaderCell.Value = "XTE";
+                DataGridSemana.Columns["miercolesTE"].Name = "XTE";
 
                 DataGridSemana.Columns["jueves"].HeaderCell.Value = "J";
+                DataGridSemana.Columns["jueves"].Name = "J";
                 DataGridSemana.Columns["juevesRetardo"].HeaderCell.Value = "JR";
+                DataGridSemana.Columns["juevesRetardo"].Name = "JR";
                 DataGridSemana.Columns["juevesSalida"].HeaderCell.Value = "JS";
+                DataGridSemana.Columns["juevesSalida"].Name = "JS";
                 DataGridSemana.Columns["juevesTE"].HeaderCell.Value = "JTE";
+                DataGridSemana.Columns["juevesTE"].Name = "JTE";
                 
                 //cambio de descanso.
                 DataGridSemana.Columns["Descanso"].HeaderCell.Value = "Dia Descanso";
+                DataGridSemana.Columns["Descanso"].Name = "Dia Descanso";
                 DataGridSemana.Columns["Descanso2"].HeaderCell.Value = "Descanso";
+                DataGridSemana.Columns["Descanso2"].Name = "Descanso";
 
 
 
@@ -212,6 +392,16 @@ namespace ProcesadorNominaas
                 col.UseColumnTextForButtonValue = true;
                 col.Text = "";
                 col.Name = "Cancelar";
+                DataGridSemana.Columns.Add(col);
+                col = new DataGridViewButtonColumn();
+                col.UseColumnTextForButtonValue = true;
+                col.Text = "";
+                col.Name = "Imprimir";
+                DataGridSemana.Columns.Add(col);
+                col = new DataGridViewButtonColumn();
+                col.UseColumnTextForButtonValue = true;
+                col.Text = "";
+                col.Name = "Pagado";
                 DataGridSemana.Columns.Add(col);
 
 
@@ -501,6 +691,9 @@ namespace ProcesadorNominaas
 
                 void ProcesaDeducido()
                 {
+                    //aqui vamos a cambiar los 100 por variables de la base de datos. tambien hacer con comidas.
+
+
                     float aux = 0;
                     if (semana.ViernesRetardo == "1")
                         aux = aux + 100;
@@ -710,7 +903,7 @@ namespace ProcesadorNominaas
                     try
                     {
                         connection.Open();
-                        MySqlDataAdapter adaptador = new MySqlDataAdapter("SELECT * FROM " + sucursal + ".Empleados order by id", connection);
+                        MySqlDataAdapter adaptador = new MySqlDataAdapter("SELECT * FROM " + sucursal + ".Empleados order by nombres", connection);
                         DataTable datos = new DataTable();
                         adaptador.Fill(datos);
 
@@ -911,6 +1104,8 @@ namespace ProcesadorNominaas
                     return 0;
                 }
             }
+
         }
+
     }
 }
