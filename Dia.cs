@@ -87,6 +87,13 @@ namespace ProcesadorNominaas
             set { total = value; }
         }
 
+        public float Pago
+        {
+            get { return total; }
+            set { total = value; }
+        }
+
+
         public string Incidencia
         {
             get { return incidencia; }

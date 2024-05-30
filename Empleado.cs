@@ -48,6 +48,11 @@ namespace ProcesadorNominaas
         private string salida = "NO";
         private float pagoDiario = 0;
 
+        //variable para saber a partir de que horas se considera turno extra.
+        private float horasParaTurnoExtra = 0;
+        private float descuentoRetardoSalida = 0;
+
+
         public int Id { get => id; set => id = value; }
         public int IdChecador { get => idChecador; set => idChecador = value; }
         public string Nombre { get => nombre; set => nombre = value; }

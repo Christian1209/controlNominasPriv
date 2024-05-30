@@ -93,7 +93,16 @@ namespace ProcesadorNominaas
         private float totalBono = 0;
         private float totalRetardos = 0;
         private float totalSalidas = 0;
-     
+        //variables de la carniceria.
+        //variable que me indica a cuanto esta la comida
+        private float comida = 0;
+
+
+        private float totalComida = 0;
+    
+
+        //variables del empleado
+
 
         // Getters y Setters
         public int Id { get => id; set => id = value; }
@@ -150,6 +159,8 @@ namespace ProcesadorNominaas
         public int DiasTrabajados { get => diasTrabajados; set => diasTrabajados = value; }
         public int DiasBono { get => diasBono; set => diasBono = value; }
         public float BonoTotal { get => bono; set => bono = value; }
+        public float Comida { get => comida; set => comida = value; }
+        public float TotalComida { get => totalComida; set => totalComida = value; }
         public float TotalDiasPagados { get => totalDiasPagados; set => totalDiasPagados = value; }
         public float LunesPago { get => lunesPago; set => lunesPago = value; }
         public float MartesPago { get => martesPago; set => martesPago = value; }

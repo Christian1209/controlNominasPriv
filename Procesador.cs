@@ -359,7 +359,7 @@ namespace ProcesadorNominaas
 
         public void InsertaCambios(Empleado empleado)
         {
-            string sqlString = "INSERT INTO " + sucursal + ".Dias (id_empleado,fecha,asistencia,retardo,salida,turno_extra,turno_extra_paga,total,incidencia,descanso_trabajado,anotaciones,horas_trabajadas,hora_llegada,sueldo_diario,hora_salida) VALUES (";
+            string sqlString = "INSERT INTO " + sucursal + ".Dias (id_empleado,fecha,asistencia,retardo,salida,turno_extra,turno_extra_paga,total,incidencia,comida,descanso_trabajado,anotaciones,horas_trabajadas,hora_llegada,sueldo_diario,hora_salida) VALUES (";
             sqlString = sqlString + "'" + empleado.IdChecador + "'" + ",";
             sqlString = sqlString + "'" + empleado.Fecha + "'" + ",";
             sqlString = sqlString + "'" + empleado.Asistencia + "'" + ",";
@@ -369,6 +369,7 @@ namespace ProcesadorNominaas
             sqlString = sqlString + "'" + empleado.TurnoExtraPaga + "'" + ",";
             sqlString = sqlString + "'" + empleado.TotalPagado + "'" + ",";
             sqlString = sqlString + "'" + empleado.Incidencia + "'" + ",";
+            sqlString = sqlString + "'" + empleado.Comida + "'" + ",";
             sqlString = sqlString + "'" + empleado.DescansoTrabajado + "'" + ",";
             sqlString = sqlString + "'" + empleado.Anotaciones + "'" + ",";
             sqlString = sqlString + "'" + empleado.HorasTrabajadas + "'" + ","; // Corregido typo: de "hoars_trabajadas" a "HorasTrabajadas"
