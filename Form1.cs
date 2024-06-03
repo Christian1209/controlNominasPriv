@@ -189,6 +189,7 @@ namespace ProcesadorNominaas
             LimpiaBotones();
             BtnNomina.BackColor = Color.FromArgb(141, 201, 225);
             openChildForm(new ContenedorNomina(carniceria));
+            //openChildForm(new FormVariablesSucursal(carniceria));
         }
         private void BtnPyCNormandia_Click(object sender, EventArgs e)
         {

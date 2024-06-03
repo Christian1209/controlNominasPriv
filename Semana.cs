@@ -5,9 +5,11 @@ using NPOI.OpenXmlFormats.Dml;
 using NPOI.OpenXmlFormats.Dml.Chart;
 using NPOI.SS.Formula.Functions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Drawing;
 using System.Linq;
@@ -27,6 +29,17 @@ namespace ProcesadorNominaas
         string sucursal = "";
         bool anterior = false;
         bool semanaPagada = false;
+
+        //variables de la sucursal para el calculo
+        float comida = 0;
+        float retardo = 0;
+        float salida = 0;
+        //variable para saber a partir de que sueldo cobramos mas en el retardo  omenos.
+        float sueldo_alto = 0;
+        float salida_baja = 0;
+        float retardo_bajo = 0;
+
+
         public Semana(string sucursal, bool anterior)
         {
             InitializeComponent();
@@ -404,8 +417,7 @@ namespace ProcesadorNominaas
             listaDeListasDias = obtenDiasBDD(fechasDias);
             listaDeEmpleados = CargaEmpleadosBdd();
 
-
-            //cargo empleados de la base de datos.
+            CargaVariables();
 
 
             ProcesaListaSemanas();
@@ -653,8 +665,6 @@ namespace ProcesadorNominaas
 
                 void ProcesaDiasPagados()
                 {
-                    if (semana.IdChecador == 12)
-                        Console.WriteLine("a");
 
                     int total = 0;
                     if (CuentaDia(semana.Lunes))
@@ -833,8 +843,10 @@ namespace ProcesadorNominaas
                 void ProcesaComida()
                 {
                     //PENDIENTE
-                    semana.Comida = 30;
+                    semana.Comida = comida;
                     float aux = 0;
+                    
+                    //comida por dia trabajado
                     if (semana.Viernes == "1")
                         aux = aux + semana.Comida;
                     if (semana.Lunes == "1")
@@ -852,6 +864,7 @@ namespace ProcesadorNominaas
                     if (semana.Domingo == "1")
                         aux = aux + semana.Comida;
 
+                    //comida por turno extra
                     if (semana.ViernesTE == "SI")
                         aux = aux + semana.Comida;
                     if (semana.LunesTE == "SI")
@@ -876,44 +889,54 @@ namespace ProcesadorNominaas
                 void ProcesaDeducido()
                 {
                     //aqui vamos a cambiar los 100 por variables de la base de datos. tambien hacer con comidas.
-
-
+                    float retardoAux = 0;
+                    float salidaAux = 0;
+                    if(semana.SueldoBase > sueldo_alto)
+                    {
+                        salidaAux = salida;
+                        retardoAux = retardo;
+                    }
+                    else
+                    {
+                        salidaAux = salida_baja;
+                        retardoAux = retardo_bajo;
+                    }
                     float aux = 0;
                     if (semana.ViernesRetardo == "1")
-                        aux = aux + 100;
+                        aux = aux + retardoAux;
                     if (semana.LunesRetardo == "1")
-                        aux = aux + 100;
+                        aux = aux + retardoAux;
                     if (semana.MartesRetardo == "1")
-                        aux = aux + 100;
+                        aux = aux + retardoAux;
                     if (semana.MiercolesRetardo == "1")
-                        aux = aux + 100;
+                        aux = aux + retardoAux;
                     if (semana.JuevesRetardo == "1")
-                        aux = aux + 100;
+                        aux = aux + retardoAux;
                     if (semana.ViernesRetardo == "1")
-                        aux = aux + 100;
+                        aux = aux + retardoAux;
                     if (semana.SabadoRetardo == "1")
-                        aux = aux + 100;
+                        aux = aux + retardoAux;
                     if (semana.DomingoRetardo == "1")
-                        aux = aux + 100;
+                        aux = aux + retardoAux;
 
                     semana.TotalRetardos = aux;
 
                     if (semana.ViernesSalida == "1")
-                        aux = aux + 100;
+                        aux = aux + salidaAux;
                     if (semana.LunesSalida == "1")
-                        aux = aux + 100;
+                        aux = aux + salidaAux;
                     if (semana.MartesSalida == "1")
-                        aux = aux + 100;
+                        aux = aux + salidaAux;
                     if (semana.MiercolesSalida == "1")
-                        aux = aux + 100;
+                        aux = aux + salidaAux;
                     if (semana.JuevesSalida == "1")
-                        aux = aux + 100;
+                        aux = aux + salidaAux;
                     if (semana.ViernesSalida == "1")
-                        aux = aux + 100;
+                        aux = aux + salidaAux;
                     if (semana.SabadoSalida == "1")
-                        aux = aux + 100;
+                        aux = aux + salidaAux;
                     if (semana.DomingoSalida == "1")
-                        aux = aux + 100;
+                        aux = aux + salidaAux;
 
                     semana.TotalSalidas = aux - semana.TotalRetardos;
 
@@ -1115,10 +1138,8 @@ namespace ProcesadorNominaas
 
                     if (diaAux.DescansoTrabajado == "SI")
                         total += semana.Comida;
-
                     return total;
                 }
-
 
             }
 
@@ -1333,6 +1354,38 @@ namespace ProcesadorNominaas
                 }
             }
 
+        }
+
+        public void CargaVariables()
+        {
+            try
+            {
+                string query = "SELECT * FROM " + sucursal + ".Variables "; // Ajusta la consulta según tus necesidades
+                using (var connection = new MySqlConnection(conexion))
+                {
+                    connection.Open();
+                    MySqlCommand  command = new MySqlCommand(query, connection);
+                    MySqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        comida = float.Parse(reader["comida"].ToString());
+                        retardo = float.Parse(reader["retardo"].ToString());
+                        salida = float.Parse(reader["salida"].ToString());
+                        sueldo_alto = float.Parse(reader["sueldo_alto"].ToString());
+                        salida_baja = float.Parse(reader["salida_baja"].ToString());
+                        retardo_bajo = float.Parse(reader["retardo_bajo"].ToString());
+
+                    }
+
+                    reader.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Error de SQL: " + ex.Message);
+                // Maneja el error de SQL (por ejemplo, problemas de conexión, errores de consulta, etc.)
+            }
         }
 
     }

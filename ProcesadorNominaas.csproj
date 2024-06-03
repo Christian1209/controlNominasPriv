@@ -298,6 +298,12 @@
     <Compile Include="DiaNomina.Designer.cs">
       <DependentUpon>DiaNomina.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormVariablesSucursal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormVariablesSucursal.Designer.cs">
+      <DependentUpon>FormVariablesSucursal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -370,6 +376,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DiaNomina.resx">
       <DependentUpon>DiaNomina.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormVariablesSucursal.resx">
+      <DependentUpon>FormVariablesSucursal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>

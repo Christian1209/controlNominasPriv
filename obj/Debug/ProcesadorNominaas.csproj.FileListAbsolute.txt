@@ -158,3 +158,4 @@ C:\Users\misa_\OneDrive\Escritorio\ControlNominasV10\bin\Debug\Microsoft.Extensi
 C:\Users\misa_\OneDrive\Escritorio\ControlNominasV10\bin\Debug\MySqlConnector.xml
 C:\Users\misa_\OneDrive\Escritorio\ControlNominasV10\bin\Debug\System.Diagnostics.DiagnosticSource.xml
 C:\Users\misa_\OneDrive\Escritorio\ControlNominasV10\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\misa_\OneDrive\Escritorio\ControlNominasV10\obj\Debug\ProcesadorNominaas.FormVariablesSucursal.resources
