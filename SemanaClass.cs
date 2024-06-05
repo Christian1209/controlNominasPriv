@@ -77,15 +77,15 @@ namespace ProcesadorNominaas
         private float nominaFiscal = 0;
         private float multa = 0;
         private float multa2 = 0;
-        private string cantidadPrestamo = "0";
-        private string cantidadAbono = "0";
-        private string saldoPrestamo = "0";
-        private string cantidadHerramienta = "0";
-        private string abonoHerramienta = "0";
-        private string gorra = "0";
-        private string cubreboca = "0";
-        private string trapo = "0";
-        private string totalUniformes = "0";
+        private float cantidadPrestamo = 0;
+        private float cantidadAbono = 0;
+        private float saldoPrestamo = 0;
+        private float cantidadHerramienta = 0;
+        private float abonoHerramienta = 0;
+        private float gorra = 0;
+        private float cubreboca = 0;
+        private float trapo = 0;
+        private float totalUniformes = 0;
         private float totalDeducido = 0;
         private float totalPagado2 = 0;
         private float bono;
@@ -96,10 +96,12 @@ namespace ProcesadorNominaas
         //variables de la carniceria.
         //variable que me indica a cuanto esta la comida
         private float comida = 0;
-
-
         private float totalComida = 0;
-    
+
+        //variable que me indica la fecha del viernes de la semana, la uso para agrupar.
+        private string fechaviernes = "";
+
+        private string semanaPagada = "";
 
         //variables del empleado
 
@@ -175,15 +177,15 @@ namespace ProcesadorNominaas
         public float NominaFiscal { get => nominaFiscal; set => nominaFiscal = value; }
         public float Multa { get => multa; set => multa = value; }
         public float Multa2 { get => multa2; set => multa2 = value; }
-        public string CantidadPrestamo { get => cantidadPrestamo; set => cantidadPrestamo = value; }
-        public string CantidadAbono { get => cantidadAbono; set => cantidadAbono = value; }
-        public string SaldoPrestamo { get => saldoPrestamo; set => saldoPrestamo = value; }
-        public string CantidadHerramienta { get => cantidadHerramienta; set => cantidadHerramienta = value; }
-        public string AbonoHerramienta { get => abonoHerramienta; set => abonoHerramienta = value; }
-        public string Gorra { get => gorra; set => gorra = value; }
-        public string Cubreboca { get => cubreboca; set => cubreboca = value; }
-        public string Trapo { get => trapo; set => trapo = value; }
-        public string TotalUniformes { get => totalUniformes; set => totalUniformes = value; }
+        public float CantidadPrestamo { get => cantidadPrestamo; set => cantidadPrestamo = value; }
+        public float CantidadAbono { get => cantidadAbono; set => cantidadAbono = value; }
+        public float SaldoPrestamo { get => saldoPrestamo; set => saldoPrestamo = value; }
+        public float CantidadHerramienta { get => cantidadHerramienta; set => cantidadHerramienta = value; }
+        public float AbonoHerramienta { get => abonoHerramienta; set => abonoHerramienta = value; }
+        public float Gorra { get => gorra; set => gorra = value; }
+        public float Cubreboca { get => cubreboca; set => cubreboca = value; }
+        public float Trapo { get => trapo; set => trapo = value; }
+        public float TotalUniformes { get => totalUniformes; set => totalUniformes = value; }
         public float TotalRetardos { get => totalRetardos; set => totalRetardos = value; }
         public float TotalSalidas { get => totalSalidas; set => totalSalidas = value; }
         public float TotalDeducido { get => totalDeducido; set => totalDeducido = value; }
@@ -199,6 +201,9 @@ namespace ProcesadorNominaas
         public float ViernesTotal { get => viernesTotal; set => viernesTotal = value; }
         public float SabadoTotal { get => sabadoTotal; set => sabadoTotal = value; }
         public float DomingoTotal { get => domingoTotal; set => domingoTotal = value; }
+
+        public string FechaViernes { get => fechaviernes; set => fechaviernes = value; }
+        public string SemanaPagada { get => semanaPagada; set => semanaPagada = value; }
 
     }
 }

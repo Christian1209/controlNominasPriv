@@ -28,7 +28,9 @@ namespace ProcesadorNominaas
         string conexion = ("Server=monorail.proxy.rlwy.net;Port=15455;Database=railway;Uid=root;password=HBFHC45b5A2BE4a552G-Cf13AeEA-DFE;");
         string sucursal = "";
         bool anterior = false;
+        string viernesAnterior = "";
         bool semanaPagada = false;
+        string semanaViernes = "";
 
         //variables de la sucursal para el calculo
         float comida = 0;
@@ -106,7 +108,7 @@ namespace ProcesadorNominaas
                 {
                     MessageBox.Show("¿Seguro que quieres confirmar el pago?  Se pagara la cantidad de: " + DataGridSemana.Rows[e.RowIndex].Cells["TotalPagado2"].Value.ToString() + ". Al empleado :  " + DataGridSemana.Rows[e.RowIndex].Cells["Nombre"].Value.ToString());
 
-                    if (CargaEmpleado(DataGridSemana.Rows[e.RowIndex])) 
+                    if (InsertaEmpleado(DataGridSemana.Rows[e.RowIndex])) 
                     {
                         DataGridViewButtonCell c = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Pagado"];
 
@@ -161,9 +163,9 @@ namespace ProcesadorNominaas
                 return false;
             }
 
-            bool CargaEmpleado(DataGridViewRow row)
+            bool InsertaEmpleado(DataGridViewRow row)
             {
-                string sqlString = "INSERT INTO " + sucursal + ".Semanas (id_checador,id_empleado,nombre,sueldo_imss,turno,entrada_domingo,entrada,salida,sueldo_base,bono,porcentaje_te,dia_descanso,v,vr,vs,dte,mte,jte,cantidad_abono,vte,s,sr,ss,ste,d,dr,ds,l,lr,ls,lte,m,mr,ms,x,xr,xs,xte,j,jr,js,descanso,descanso_t,dias_descanso,incapacidad,vacaciones,dias_trabajados,dias_bono,bono_total,total_dias_pagados,total_pagado,total_devengado,descuento_incapacidad,nomina_fiscal,multa,multa2,cantidad_prestamo,saldo_prestamo,cantidad_herramienta,abono_herramienta,gorra,trapo,total_uniformes,total_retardos,total_salidas,total_deducido,total_pagado2,semana_pagada\r\n) VALUES (";
+                string sqlString = "INSERT INTO " + sucursal + ".Semanas (id_checador,id_empleado,nombre,sueldo_imss,turno,entrada_domingo,entrada,salida,sueldo_base,bono,porcentaje_te,dia_descanso,v,vr,vs,dte,mte,jte,cantidad_abono,vte,s,sr,ss,ste,d,dr,ds,l,lr,ls,lte,m,mr,ms,x,xr,xs,xte,j,jr,js,descanso,descanso_t,dias_descanso,incapacidad,vacaciones,dias_trabajados,dias_bono,bono_total,total_dias_pagados,total_pagado,total_devengado,descuento_incapacidad,nomina_fiscal,multa,multa2,cantidad_prestamo,saldo_prestamo,cantidad_herramienta,abono_herramienta,gorra,trapo,total_uniformes,total_retardos,total_salidas,total_deducido,total_pagado2,fecha_viernes,semana_pagada\r\n) VALUES (";
                 sqlString = sqlString + "'" + row.Cells["Id_C"].Value.ToString() + "'" + ",";
                 sqlString = sqlString + "'" + row.Cells["Id"].Value.ToString() + "'" + ",";
                 sqlString = sqlString + "'" + row.Cells["Nombre"].Value.ToString() + "'" + ",";
@@ -231,6 +233,7 @@ namespace ProcesadorNominaas
                 sqlString = sqlString + "'" + row.Cells["TotalSalidas"].Value.ToString() + "'" + ",";
                 sqlString = sqlString + "'" + row.Cells["TotalDeducido"].Value.ToString() + "'" + ",";
                 sqlString = sqlString + "'" + row.Cells["TotalPagado2"].Value.ToString() + "'" + ",";
+                sqlString = sqlString + "'" + semanaViernes + "'" + ",";
                 sqlString = sqlString + "'" + "SI" + "'"; // Último valor, no lleva coma al final
                 sqlString = sqlString + ");"; // Cerramos la sentencia SQL
                 using (var connection = new MySqlConnection(conexion))
@@ -323,6 +326,7 @@ namespace ProcesadorNominaas
                     sqlString = sqlString + "'" + row.Cells["TotalRetardos"].Value.ToString() + "'" + ",";
                     sqlString = sqlString + "'" + row.Cells["TotalSalidas"].Value.ToString() + "'" + ",";
                     sqlString = sqlString + "'" + row.Cells["TotalDeducido"].Value.ToString() + "'" + ",";
+                    sqlString = sqlString + "'" + row.Cells["TotalPagado2"].Value.ToString() + "'" + ",";
                     sqlString = sqlString + "'" + row.Cells["TotalPagado2"].Value.ToString() + "'" + ",";
                     sqlString = sqlString + "'" + "NO" + "'"; // Último valor, no lleva coma al final
                     sqlString = sqlString + ");"; // Cerramos la sentencia SQL
@@ -419,8 +423,19 @@ namespace ProcesadorNominaas
 
             CargaVariables();
 
+            if (anterior)
+            {
+                semanaViernes = viernesAnterior;
+                ProcesaListaSemanas(viernesAnterior);
+            }
+            else
+            {   
+                string viernesActual = ObtenViernesActual();
+                semanaViernes = viernesActual;
+                ProcesaListaSemanas(viernesActual);
 
-            ProcesaListaSemanas();
+            }
+
             CargaGrid();
 
 
@@ -588,12 +603,120 @@ namespace ProcesadorNominaas
                 return aux;
             }
             
-            void ProcesaListaSemanas()
+            void ProcesaListaSemanas(string viernes)
             {
+                List<SemanaClass> semanasBdd = new List<SemanaClass>();
+                semanasBdd = RecuperaSemanasBdd();
+
                 foreach (Empleado empleado in listaDeEmpleados)
                 {
+                    //recuperar empleados de base de datos.
+                    //validar si estan pagados. 
+                    //si esta pagado no procesarlo.
+                    //if not in semanasBdd
                     ProcesaSemana(empleado);
                     
+                }
+                List<SemanaClass> RecuperaSemanasBdd(){
+                    List<SemanaClass> semanasBddAux = new List<SemanaClass>();
+                    using (var connection = new MySqlConnection(conexion))
+                    {
+                        try
+                        {
+                            connection.Open();
+                            MySqlDataAdapter adaptador = new MySqlDataAdapter("SELECT * FROM " + sucursal + ".Semanas where fecha_viernes = '" + semanaViernes +"' order by nombre", connection);
+                            DataTable datos = new DataTable();
+                            adaptador.Fill(datos);
+
+                            //aqui obtenemos a los empleados de la base de datos y los almacenamos en una lista en memoria dinamica
+
+
+                            for (int i = 0; i < datos.Rows.Count; i++)
+                            {
+                                SemanaClass auxiliar = new SemanaClass();
+                                auxiliar.Id = int.Parse(datos.Rows[i]["id_empleado"].ToString());
+                                auxiliar.IdChecador = int.Parse(datos.Rows[i]["id_checador"].ToString());
+                                auxiliar.Nombre = datos.Rows[i]["nombre"].ToString();
+                                auxiliar.SueldoImss = float.Parse(datos.Rows[i]["sueldo_imss"].ToString());
+                                auxiliar.Turno = datos.Rows[i]["turno"].ToString();
+                                auxiliar.EntradaDomingo = datos.Rows[i]["entrada_domingo"].ToString();
+                                auxiliar.Entrada = datos.Rows[i]["entrada"].ToString();
+                                auxiliar.Salida = datos.Rows[i]["salida"].ToString();
+                                auxiliar.SueldoBase = float.Parse(datos.Rows[i]["sueldo_base"].ToString());
+                                auxiliar.Bono = float.Parse(datos.Rows[i]["bono"].ToString());
+                                auxiliar.PorcentajeTe = int.Parse(datos.Rows[i]["porcentaje_te"].ToString());
+                                auxiliar.Descanso = datos.Rows[i]["dia_descanso"].ToString();
+                                auxiliar.Viernes = datos.Rows[i]["v"].ToString();
+                                auxiliar.ViernesRetardo = datos.Rows[i]["vr"].ToString();
+                                auxiliar.ViernesSalida = datos.Rows[i]["vs"].ToString();
+                                auxiliar.DomingoTE = datos.Rows[i]["dte"].ToString();
+                                auxiliar.MiercolesTE = datos.Rows[i]["mte"].ToString();
+                                auxiliar.JuevesTE = datos.Rows[i]["jte"].ToString();
+                                auxiliar.CantidadAbono = float.Parse(datos.Rows[i]["cantidad_abono"].ToString());
+                                auxiliar.ViernesTE = datos.Rows[i]["vte"].ToString();
+                                auxiliar.Sabado = datos.Rows[i]["s"].ToString();
+                                auxiliar.SabadoRetardo = datos.Rows[i]["sr"].ToString();
+                                auxiliar.SabadoSalida = datos.Rows[i]["ss"].ToString();
+                                auxiliar.SabadoTE = datos.Rows[i]["ste"].ToString();
+                                auxiliar.Domingo = datos.Rows[i]["d"].ToString();
+                                auxiliar.DomingoSalida = datos.Rows[i]["ds"].ToString();
+                                auxiliar.Lunes = datos.Rows[i]["l"].ToString();
+                                auxiliar.LunesRetardo = datos.Rows[i]["lr"].ToString();
+                                auxiliar.LunesSalida = datos.Rows[i]["ls"].ToString();
+                                auxiliar.LunesTE = datos.Rows[i]["lte"].ToString();
+                                auxiliar.Martes = datos.Rows[i]["m"].ToString();
+                                auxiliar.MartesRetardo = datos.Rows[i]["mr"].ToString();
+                                auxiliar.MartesSalida = datos.Rows[i]["ms"].ToString();
+                                auxiliar.Miercoles = datos.Rows[i]["x"].ToString();
+                                auxiliar.MiercolesRetardo = datos.Rows[i]["xr"].ToString();
+                                auxiliar.MiercolesSalida = datos.Rows[i]["xs"].ToString();
+                                auxiliar.MiercolesTE = datos.Rows[i]["xte"].ToString();
+                                auxiliar.Jueves = datos.Rows[i]["j"].ToString();
+                                auxiliar.JuevesRetardo = datos.Rows[i]["jr"].ToString();
+                                auxiliar.JuevesSalida = datos.Rows[i]["js"].ToString();
+                                auxiliar.Descanso2 = int.Parse(datos.Rows[i]["descanso"].ToString());
+                                auxiliar.DescansoT = int.Parse(datos.Rows[i]["descanso_t"].ToString());
+                                auxiliar.DiasDescanso = int.Parse(datos.Rows[i]["dias_descanso"].ToString());
+                                auxiliar.Incapacidad = int.Parse(datos.Rows[i]["incapacidad"].ToString());
+                                auxiliar.Vacaciones = int.Parse(datos.Rows[i]["vacaciones"].ToString());
+                                auxiliar.DiasTrabajados = int.Parse(datos.Rows[i]["dias_trabajados"].ToString());
+                                auxiliar.DiasBono = int.Parse(datos.Rows[i]["dias_bono"].ToString());
+                                auxiliar.BonoTotal = int.Parse(datos.Rows[i]["bono_total"].ToString());
+                                auxiliar.TotalDiasPagados = int.Parse(datos.Rows[i]["total_dias_pagados"].ToString());
+                                auxiliar.TotalDevengando = int.Parse(datos.Rows[i]["total_devengado"].ToString());
+                                auxiliar.DescuentoIncapacidad = int.Parse(datos.Rows[i]["descuento_incapacidad"].ToString());
+                                auxiliar.NominaFiscal = int.Parse(datos.Rows[i]["nomina_fiscal"].ToString());
+                                auxiliar.Multa = int.Parse(datos.Rows[i]["multa"].ToString());
+                                auxiliar.Multa2 = int.Parse(datos.Rows[i]["multa2"].ToString());
+                                auxiliar.CantidadPrestamo = float.Parse(datos.Rows[i]["cantidad_prestamo"].ToString());
+                                auxiliar.SaldoPrestamo = float.Parse(datos.Rows[i]["saldo_prestamo"].ToString());
+                                auxiliar.CantidadHerramienta = float.Parse(datos.Rows[i]["cantidad_herramienta"].ToString());
+                                auxiliar.AbonoHerramienta = float.Parse(datos.Rows[i]["abono_herramienta"].ToString());
+                                auxiliar.Gorra = float.Parse(datos.Rows[i]["gorra"].ToString());
+                                auxiliar.Trapo = float.Parse(datos.Rows[i]["trapo"].ToString());
+                                auxiliar.TotalUniformes = float.Parse(datos.Rows[i]["total_uniformes"].ToString());
+                                auxiliar.TotalRetardos = float.Parse(datos.Rows[i]["total_retardos"].ToString());
+                                auxiliar.TotalSalidas = float.Parse(datos.Rows[i]["total_salidas"].ToString());
+                                auxiliar.TotalDeducido = float.Parse(datos.Rows[i]["total_deducido"].ToString());
+                                auxiliar.TotalPagado2 = float.Parse(datos.Rows[i]["total_pagado2"].ToString());
+                                auxiliar.SemanaPagada = datos.Rows[i]["semana_pagada"].ToString();
+                                auxiliar.FechaViernes = datos.Rows[i]["fecha_viernes"].ToString();
+
+
+                                semanasBddAux.Add(auxiliar);
+                            }
+                            connection.Close();
+                            return semanasBddAux;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error: " + ex.Message);
+                        }
+                    }
+                     
+
+
+                    return semanasBddAux;
                 }
             }
             
@@ -1334,24 +1457,7 @@ namespace ProcesadorNominaas
                 return aux;
 
 
-                int convierteDia(int dia)
-                {
-                    if (dia == 1)
-                        return 4;
-                    if (dia == 2)
-                        return 5;
-                    if (dia == 3)
-                        return 6;
-                    if (dia == 4)
-                        return 7;
-                    if (dia == 5)
-                        return 1;
-                    if (dia == 6)
-                        return 2;
-                    if (dia == 0)
-                        return 3;
-                    return 0;
-                }
+
             }
 
         }
@@ -1388,5 +1494,45 @@ namespace ProcesadorNominaas
             }
         }
 
+        public string ObtenViernesActual()
+        {
+            // Obtener la fecha actual
+            DateTime fechaActual = DateTime.Today;
+
+
+            // Obtener el día de la semana actual
+            int diaSemanaActual = (int)fechaActual.DayOfWeek;
+
+            // Obtener la fecha del viernes anterior
+            int diaViernes = (int)DayOfWeek.Friday;
+
+            diaViernes = convierteDia(diaViernes);
+            diaSemanaActual = convierteDia(diaSemanaActual);
+
+
+            int diasAvanzar = (diaViernes - diaSemanaActual);
+
+            DateTime fechaViernesAnterior = fechaActual.AddDays(diasAvanzar);
+
+            return fechaViernesAnterior.Year.ToString() + "-" + fechaViernesAnterior.Month.ToString() + "-" + fechaViernesAnterior.Day.ToString();
+        }
+        public int convierteDia(int dia)
+        {
+            if (dia == 1)
+                return 4;
+            if (dia == 2)
+                return 5;
+            if (dia == 3)
+                return 6;
+            if (dia == 4)
+                return 7;
+            if (dia == 5)
+                return 1;
+            if (dia == 6)
+                return 2;
+            if (dia == 0)
+                return 3;
+            return 0;
+        }
     }
 }
