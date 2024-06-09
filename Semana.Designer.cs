@@ -30,8 +30,9 @@
         {
             this.DataGridSemana = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
-            this.BtnImprimeTodo = new FontAwesome.Sharp.IconButton();
             this.label2 = new System.Windows.Forms.Label();
+            this.BtnImprimeTodo = new FontAwesome.Sharp.IconButton();
+            this.lblSemanaLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridSemana)).BeginInit();
             this.SuspendLayout();
             // 
@@ -42,11 +43,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DataGridSemana.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.DataGridSemana.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DataGridSemana.Location = new System.Drawing.Point(3, 42);
+            this.DataGridSemana.Location = new System.Drawing.Point(3, 60);
             this.DataGridSemana.Name = "DataGridSemana";
             this.DataGridSemana.RowHeadersWidth = 51;
             this.DataGridSemana.RowTemplate.Height = 24;
-            this.DataGridSemana.Size = new System.Drawing.Size(1495, 682);
+            this.DataGridSemana.Size = new System.Drawing.Size(1495, 664);
             this.DataGridSemana.TabIndex = 1;
             this.DataGridSemana.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridSemana_CellContentClick);
             // 
@@ -55,11 +56,22 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(696, 10);
+            this.label1.Location = new System.Drawing.Point(568, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(119, 29);
+            this.label1.Size = new System.Drawing.Size(126, 29);
             this.label1.TabIndex = 2;
-            this.label1.Text = "SEMANA";
+            this.label1.Text = "SEMANA:";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(291, 740);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(414, 29);
+            this.label2.TabIndex = 49;
+            this.label2.Text = "IMPRIMIR TODOS LOS RECIBOS:";
             // 
             // BtnImprimeTodo
             // 
@@ -76,22 +88,23 @@
             this.BtnImprimeTodo.TabIndex = 48;
             this.BtnImprimeTodo.UseVisualStyleBackColor = false;
             // 
-            // label2
+            // lblSemanaLabel
             // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(291, 740);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(414, 29);
-            this.label2.TabIndex = 49;
-            this.label2.Text = "IMPRIMIR TODOS LOS RECIBOS:";
+            this.lblSemanaLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblSemanaLabel.AutoSize = true;
+            this.lblSemanaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSemanaLabel.Location = new System.Drawing.Point(732, 9);
+            this.lblSemanaLabel.Name = "lblSemanaLabel";
+            this.lblSemanaLabel.Size = new System.Drawing.Size(20, 29);
+            this.lblSemanaLabel.TabIndex = 50;
+            this.lblSemanaLabel.Text = ".";
             // 
             // Semana
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1501, 791);
+            this.Controls.Add(this.lblSemanaLabel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.BtnImprimeTodo);
             this.Controls.Add(this.label1);
@@ -111,5 +124,6 @@
         private System.Windows.Forms.Label label1;
         private FontAwesome.Sharp.IconButton BtnImprimeTodo;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblSemanaLabel;
     }
 }

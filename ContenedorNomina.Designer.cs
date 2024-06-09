@@ -35,7 +35,7 @@
             this.BtnViernes = new FontAwesome.Sharp.IconButton();
             this.BtnJueves = new FontAwesome.Sharp.IconButton();
             this.BtnDomingo = new FontAwesome.Sharp.IconButton();
-            this.iconButton7 = new FontAwesome.Sharp.IconButton();
+            this.btnHistorico = new FontAwesome.Sharp.IconButton();
             this.BtnSemana = new FontAwesome.Sharp.IconButton();
             this.BtnSemanaAnterior = new FontAwesome.Sharp.IconButton();
             this.SuspendLayout();
@@ -152,21 +152,22 @@
             this.BtnDomingo.UseVisualStyleBackColor = false;
             this.BtnDomingo.Click += new System.EventHandler(this.BtnDomingo_Click);
             // 
-            // iconButton7
+            // btnHistorico
             // 
-            this.iconButton7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(150)))), ((int)(((byte)(243)))));
-            this.iconButton7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.iconButton7.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.iconButton7.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.iconButton7.IconColor = System.Drawing.Color.White;
-            this.iconButton7.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.iconButton7.IconSize = 20;
-            this.iconButton7.Location = new System.Drawing.Point(749, 590);
-            this.iconButton7.Name = "iconButton7";
-            this.iconButton7.Size = new System.Drawing.Size(297, 112);
-            this.iconButton7.TabIndex = 52;
-            this.iconButton7.Text = "Historico";
-            this.iconButton7.UseVisualStyleBackColor = false;
+            this.btnHistorico.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(150)))), ((int)(((byte)(243)))));
+            this.btnHistorico.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnHistorico.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnHistorico.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.btnHistorico.IconColor = System.Drawing.Color.White;
+            this.btnHistorico.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.btnHistorico.IconSize = 20;
+            this.btnHistorico.Location = new System.Drawing.Point(749, 590);
+            this.btnHistorico.Name = "btnHistorico";
+            this.btnHistorico.Size = new System.Drawing.Size(297, 112);
+            this.btnHistorico.TabIndex = 52;
+            this.btnHistorico.Text = "Historico";
+            this.btnHistorico.UseVisualStyleBackColor = false;
+            this.btnHistorico.Click += new System.EventHandler(this.btnHistorico_Click);
             // 
             // BtnSemana
             // 
@@ -200,6 +201,7 @@
             this.BtnSemanaAnterior.TabIndex = 54;
             this.BtnSemanaAnterior.Text = "Semana Anterior";
             this.BtnSemanaAnterior.UseVisualStyleBackColor = false;
+            this.BtnSemanaAnterior.Click += new System.EventHandler(this.BtnSemanaAnterior_Click);
             // 
             // ContenedorNomina
             // 
@@ -209,7 +211,7 @@
             this.ClientSize = new System.Drawing.Size(1089, 850);
             this.Controls.Add(this.BtnSemanaAnterior);
             this.Controls.Add(this.BtnSemana);
-            this.Controls.Add(this.iconButton7);
+            this.Controls.Add(this.btnHistorico);
             this.Controls.Add(this.BtnDomingo);
             this.Controls.Add(this.BtnJueves);
             this.Controls.Add(this.BtnViernes);
@@ -232,7 +234,7 @@
         private FontAwesome.Sharp.IconButton BtnViernes;
         private FontAwesome.Sharp.IconButton BtnJueves;
         private FontAwesome.Sharp.IconButton BtnDomingo;
-        private FontAwesome.Sharp.IconButton iconButton7;
+        private FontAwesome.Sharp.IconButton btnHistorico;
         private FontAwesome.Sharp.IconButton BtnSemana;
         private FontAwesome.Sharp.IconButton BtnSemanaAnterior;
     }

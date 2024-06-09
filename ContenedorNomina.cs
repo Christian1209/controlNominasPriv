@@ -63,7 +63,19 @@ namespace ProcesadorNominaas
 
         private void BtnSemana_Click(object sender, EventArgs e)
         {
-            Semana form1 = new Semana(sucursal, false);
+            Semana form1 = new Semana(sucursal,"actual", 0);
+            form1.ShowDialog();
+        }
+
+        private void BtnSemanaAnterior_Click(object sender, EventArgs e)
+        {
+            Semana form1 = new Semana(sucursal, "anterior", 7);
+            form1.ShowDialog();
+        }
+
+        private void btnHistorico_Click(object sender, EventArgs e)
+        {
+            SemanaHistorico form1 = new SemanaHistorico(sucursal);
             form1.ShowDialog();
         }
     }

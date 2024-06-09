@@ -322,6 +322,12 @@
       <DependentUpon>Semana.cs</DependentUpon>
     </Compile>
     <Compile Include="SemanaClass.cs" />
+    <Compile Include="SemanaHistorico.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SemanaHistorico.Designer.cs">
+      <DependentUpon>SemanaHistorico.cs</DependentUpon>
+    </Compile>
     <Compile Include="VentanaAguinaldos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -385,6 +391,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Semana.resx">
       <DependentUpon>Semana.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SemanaHistorico.resx">
+      <DependentUpon>SemanaHistorico.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VentanaAguinaldos.resx">
       <DependentUpon>VentanaAguinaldos.cs</DependentUpon>

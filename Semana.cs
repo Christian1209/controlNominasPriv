@@ -27,8 +27,7 @@ namespace ProcesadorNominaas
 
         string conexion = ("Server=monorail.proxy.rlwy.net;Port=15455;Database=railway;Uid=root;password=HBFHC45b5A2BE4a552G-Cf13AeEA-DFE;");
         string sucursal = "";
-        bool anterior = false;
-        string viernesAnterior = "";
+        string anterior = "";
         bool semanaPagada = false;
         string semanaViernes = "";
 
@@ -41,12 +40,15 @@ namespace ProcesadorNominaas
         float salida_baja = 0;
         float retardo_bajo = 0;
 
+        //variable para ver cuantos dias le voy a restar o sumar al viernes.
+        int dias = 0;
 
-        public Semana(string sucursal, bool anterior)
+        public Semana(string sucursal, string anterior, int dias)
         {
             InitializeComponent();
             this.sucursal = sucursal;
             this.anterior = anterior;
+            this.dias = dias;
         }
 
         private void DataGridSemana_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -59,14 +61,14 @@ namespace ProcesadorNominaas
 
 
 
-                string[] editableColumns = { "V","VR","VS","VTE","S","SR","SS","STE","D","DR","DS","DTE","L","LR","LS","LTE","M","MR","MS","MTE","X","XR","XS","XTE","J","JR","JS","JTE"}; // Índices de columnas que deseas hacer editables
+                string[] editableColumns = { "V", "VR", "VS", "VTE", "S", "SR", "SS", "STE", "D", "DR", "DS", "DTE", "L", "LR", "LS", "LTE", "M", "MR", "MS", "MTE", "X", "XR", "XS", "XTE", "J", "JR", "JS", "JTE" }; // Índices de columnas que deseas hacer editables
 
                 // Haz que las celdas específicas sean editables
                 foreach (string columnIndex in editableColumns)
                 {
                     DataGridSemana.Rows[e.RowIndex].Cells[columnIndex].ReadOnly = false;
                 }
-                DataGridSemana.Refresh();   
+                DataGridSemana.Refresh();
 
             }
             // Verifica si el clic ocurrió en la columna de botón
@@ -108,37 +110,15 @@ namespace ProcesadorNominaas
                 {
                     MessageBox.Show("¿Seguro que quieres confirmar el pago?  Se pagara la cantidad de: " + DataGridSemana.Rows[e.RowIndex].Cells["TotalPagado2"].Value.ToString() + ". Al empleado :  " + DataGridSemana.Rows[e.RowIndex].Cells["Nombre"].Value.ToString());
 
-                    if (InsertaEmpleado(DataGridSemana.Rows[e.RowIndex])) 
+                    if (InsertaEmpleado(DataGridSemana.Rows[e.RowIndex]))
                     {
                         DataGridViewButtonCell c = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Pagado"];
 
                         //cambiar color.
                         c.Style.ForeColor = Color.Black;
                         c.Style.BackColor = Color.PaleGreen;
-
-                        /*
-                        if (semanaPagada == false)
-                            CargaSemana(DataGridSemana);
-                        //seguir haciendo el pago individual.
-                        */
-
                     }
 
-
-                    //aqui lo que voy a hacer es que si es jueves o semana anterior cargue la semana a la base de datos, para no cargarla siempre que se genere
-                    if (EsJueves() || anterior == true)
-                    {
-                        MessageBox.Show("¿Seguro que quieres confirmar el pago?  Se pagara la cantidad de: " + DataGridSemana.Columns["TotalPagado2"] + ". Al empleado :  " + DataGridSemana.Columns["Nombre"]);
-                        /*
-                        if (semanaPagada == false)
-                            CargaSemana(DataGridSemana);
-                        //seguir haciendo el pago individual.
-                        */
-                    }
-                    else
-                    {
-                        MessageBox.Show("La semana no ha terminado, espera al Jueves para pagar.");
-                    }
 
                     DataGridSemana.Refresh();
                 }
@@ -147,7 +127,7 @@ namespace ProcesadorNominaas
             bool FuePagado()
             {
                 DataGridViewButtonCell c = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Pagado"];
-                if(c.Style.BackColor == Color.PaleGreen)
+                if (c.Style.BackColor == Color.PaleGreen)
                     return true;
                 else
                 {
@@ -249,106 +229,12 @@ namespace ProcesadorNominaas
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Ocurrio un error al pagar, intenta de nuevo o contactate con un administrador ("+  ex.ToString()  + ")");
+                        MessageBox.Show("Ocurrio un error al pagar, intenta de nuevo o contactate con un administrador (" + ex.ToString() + ")");
                         return false;
                     }
                 }
             }
 
-            void CargaSemana(DataGridView DataGrid)
-            {
-                foreach(DataGridViewRow row in DataGrid.Rows)
-                {
-                    string sqlString = "INSERT INTO " + sucursal + ".Semanas (id_checador,id_empleado,nombre,sueldo_imss,turno,entrada_domingo,entrada,salida,sueldo_base,bono,porcentaje_te,dia_descanso,v,vr,vs,dte,mte,jte,cantidad_abono,vte,s,sr,ss,ste,d,dr,ds,l,lr,ls,lte,m,mr,ms,x,xr,xs,xte,j,jr,js,descanso,descanso_t,dias_descanso,incapacidad,vacaciones,dias_trabajados,dias_bono,bono_total,total_dias_pagados,total_pagado,total_devengado,descuento_incapacidad,nomina_fiscal,multa,multa2,cantidad_prestamo,saldo_prestamo,cantidad_herramienta,abono_herramienta,gorra,trapo,total_uniformes,total_retardos,total_salidas,total_deducido,total_pagado2,semana_pagada\r\n) VALUES (";
-                    sqlString = sqlString + "'" + row.Cells["Id_C"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Id"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Nombre"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["SueldoImss"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Turno"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["EntradaDomingo"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Entrada"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Salida"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["SueldoBase"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Bono"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["%TE"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Dia Descanso"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["V"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["VR"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["VS"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["DTE"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["MTE"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["JTE"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["CantidadAbono"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["VTE"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["S"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["SR"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["SS"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["STE"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["D"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["DR"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["DS"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["L"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["LR"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["LS"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["LTE"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["M"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["MR"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["MS"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["X"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["XR"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["XS"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["XTE"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["J"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["JR"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["JS"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Descanso"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["DescansoT"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["DiasDescanso"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Incapacidad"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Vacaciones"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["DiasTrabajados"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["DiasBono"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["BonoTotal"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["TotalDiasPagados"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["TotalPagado"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["TotalDevengando"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["DescuentoIncapacidad"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["NominaFiscal"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Multa"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Multa2"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["CantidadPrestamo"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["SaldoPrestamo"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["CantidadHerramienta"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["AbonoHerramienta"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Gorra"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["Trapo"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["TotalUniformes"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["TotalRetardos"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["TotalSalidas"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["TotalDeducido"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["TotalPagado2"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + row.Cells["TotalPagado2"].Value.ToString() + "'" + ",";
-                    sqlString = sqlString + "'" + "NO" + "'"; // Último valor, no lleva coma al final
-                    sqlString = sqlString + ");"; // Cerramos la sentencia SQL
-                    using (var connection = new MySqlConnection(conexion))
-                    {
-                        try
-                        {
-                            connection.Open();
-
-                            MySqlCommand comando = new MySqlCommand(sqlString, connection);
-                            comando.ExecuteNonQuery();
-                            connection.Close();
-
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Ocurrio un error al pagar, intenta de nuevo o contactate con un administrador"+ ex.ToString());
-                        }
-                    }
-                }
-
-            }
         }
 
         public void myDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -393,12 +279,46 @@ namespace ProcesadorNominaas
             c.DefaultCellStyle.ForeColor = Color.Navy;
             c.DefaultCellStyle.BackColor = Color.Gainsboro;
             c.Text = "P";
+            //cambiar color.
 
+
+            ColoresPagado();
 
             //colores headers.
             DataGridSemana.EnableHeadersVisualStyles = false;
             DataGridSemana.Columns["totalPagado2"].HeaderCell.Style.BackColor = Color.LimeGreen;
             DataGridSemana.Columns["totalDeducido"].HeaderCell.Style.BackColor = Color.Tomato;
+
+            void ColoresPagado()
+            {
+                if (DataGridSemana.Columns[e.ColumnIndex].Name == "Pagado")
+                {
+                    // Obtén el valor de la columna "SemanaPagada" en la misma fila
+                    var semanaPagadaValue = DataGridSemana.Rows[e.RowIndex].Cells["SemanaPagada"].Value;
+
+                    // Verifica si el valor de "SemanaPagada" es "SI"
+                    if (semanaPagadaValue != null && semanaPagadaValue.ToString() == "SI")
+                    {
+                        // Cambia el color del botón en la celda "Pagado"
+                        DataGridViewButtonCell cAux = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Pagado"];
+                        cAux.Style.ForeColor = Color.Black;
+                        cAux.Style.BackColor = Color.PaleGreen;
+                    }
+                    else if (semanaPagadaValue != null && semanaPagadaValue.ToString() == "NO" && anterior == "anterior" )
+                    {
+                        // Cambia el color del botón en la celda "Pagado"
+                        DataGridViewButtonCell cAux = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Pagado"];
+                        cAux.Style.ForeColor = Color.Black;
+                        cAux.Style.BackColor = Color.OrangeRed;
+                    }
+                    else
+                    {
+                        // Aplica un estilo por defecto si no se cumple la condición
+                        e.CellStyle.BackColor = Color.Gainsboro;
+                        e.CellStyle.ForeColor = Color.Navy;
+                    }
+                }
+            }
 
         }
 
@@ -417,24 +337,19 @@ namespace ProcesadorNominaas
             List<Empleado> listaDeEmpleados = new List<Empleado>();
 
 
-            fechasDias = ObtenDias();
+            semanaViernes = ObtenViernes(anterior, dias);
+
+
+
+            fechasDias = ObtenDias(anterior, dias);
             listaDeListasDias = obtenDiasBDD(fechasDias);
             listaDeEmpleados = CargaEmpleadosBdd();
 
             CargaVariables();
 
-            if (anterior)
-            {
-                semanaViernes = viernesAnterior;
-                ProcesaListaSemanas(viernesAnterior);
-            }
-            else
-            {   
-                string viernesActual = ObtenViernesActual();
-                semanaViernes = viernesActual;
-                ProcesaListaSemanas(viernesActual);
 
-            }
+
+            ProcesaListaSemanas(semanaViernes, anterior);
 
             CargaGrid();
 
@@ -468,6 +383,8 @@ namespace ProcesadorNominaas
                 DataGridSemana.Columns["SabadoPago"].Visible = false;
                 DataGridSemana.Columns["DomingoPago"].Visible = false;
                 DataGridSemana.Columns["Comida"].Visible = false;
+                DataGridSemana.Columns["FechaViernes"].Visible = false;
+                DataGridSemana.Columns["SemanaPagada"].Visible = false;
 
 
                 DataGridSemana.Columns["viernes"].HeaderCell.Value = "V";
@@ -532,7 +449,7 @@ namespace ProcesadorNominaas
                 DataGridSemana.Columns["juevesSalida"].Name = "JS";
                 DataGridSemana.Columns["juevesTE"].HeaderCell.Value = "JTE";
                 DataGridSemana.Columns["juevesTE"].Name = "JTE";
-                
+
                 //cambio de descanso.
                 DataGridSemana.Columns["Descanso"].HeaderCell.Value = "Dia Descanso";
                 DataGridSemana.Columns["Descanso"].Name = "Dia Descanso";
@@ -547,7 +464,7 @@ namespace ProcesadorNominaas
                 col.Text = "";
                 col.Name = "Modificar";
                 DataGridSemana.Columns.Add(col);
-                col = new DataGridViewButtonColumn(); 
+                col = new DataGridViewButtonColumn();
                 col.UseColumnTextForButtonValue = true;
                 col.Text = "";
                 col.Name = "Guardar";
@@ -588,11 +505,11 @@ namespace ProcesadorNominaas
 
 
 
-            Dia BuscaDia( int diaDeSemana, int idChecador ) { 
+            Dia BuscaDia(int diaDeSemana, int idChecador) {
                 Dia aux = new Dia();
                 foreach (Dia dia in listaDeListasDias[diaDeSemana])
                 {
-                    if(dia.Id == idChecador)
+                    if (dia.Id == idChecador)
                     {
                         aux = dia;
                         return aux;
@@ -602,29 +519,58 @@ namespace ProcesadorNominaas
 
                 return aux;
             }
-            
-            void ProcesaListaSemanas(string viernes)
+
+            void ProcesaListaSemanas(string viernes, string anterior)
             {
                 List<SemanaClass> semanasBdd = new List<SemanaClass>();
                 semanasBdd = RecuperaSemanasBdd();
 
+                bool incompleta = false;
                 foreach (Empleado empleado in listaDeEmpleados)
                 {
-                    //recuperar empleados de base de datos.
-                    //validar si estan pagados. 
-                    //si esta pagado no procesarlo.
-                    //if not in semanasBdd
-                    ProcesaSemana(empleado);
-                    
+
+
+                    SemanaClass aux = new SemanaClass();
+                    if (EmpleadoInBdd(empleado, semanasBdd, ref aux))
+                    {
+                        listaDeSemanas.Add(aux);
+                    }
+                    else
+                    {
+                        aux = ProcesaSemana(empleado);
+                        if (anterior == "anterior")
+                        {
+                            if(aux.Viernes != "-")
+                            {
+                                InsertaSemana(aux);
+                            }
+                            else
+                            {
+                                listaDeSemanas.Clear();
+                                MessageBox.Show("Semana vacía");
+                                return;
+                            }
+                            if(aux.Jueves == "-")
+                            {
+                                incompleta = true;
+                            }
+
+                        }
+                    }
+
+
                 }
-                List<SemanaClass> RecuperaSemanasBdd(){
+                if(incompleta)
+                    MessageBox.Show("Semana incompleta, deberias procesar todos los días de la semana");
+
+                List<SemanaClass> RecuperaSemanasBdd() {
                     List<SemanaClass> semanasBddAux = new List<SemanaClass>();
                     using (var connection = new MySqlConnection(conexion))
                     {
                         try
                         {
                             connection.Open();
-                            MySqlDataAdapter adaptador = new MySqlDataAdapter("SELECT * FROM " + sucursal + ".Semanas where fecha_viernes = '" + semanaViernes +"' order by nombre", connection);
+                            MySqlDataAdapter adaptador = new MySqlDataAdapter("SELECT * FROM " + sucursal + ".Semanas where fecha_viernes = '" + semanaViernes + "' order by nombre", connection);
                             DataTable datos = new DataTable();
                             adaptador.Fill(datos);
 
@@ -650,7 +596,7 @@ namespace ProcesadorNominaas
                                 auxiliar.ViernesRetardo = datos.Rows[i]["vr"].ToString();
                                 auxiliar.ViernesSalida = datos.Rows[i]["vs"].ToString();
                                 auxiliar.DomingoTE = datos.Rows[i]["dte"].ToString();
-                                auxiliar.MiercolesTE = datos.Rows[i]["mte"].ToString();
+                                auxiliar.MartesTE = datos.Rows[i]["mte"].ToString();
                                 auxiliar.JuevesTE = datos.Rows[i]["jte"].ToString();
                                 auxiliar.CantidadAbono = float.Parse(datos.Rows[i]["cantidad_abono"].ToString());
                                 auxiliar.ViernesTE = datos.Rows[i]["vte"].ToString();
@@ -683,7 +629,7 @@ namespace ProcesadorNominaas
                                 auxiliar.DiasBono = int.Parse(datos.Rows[i]["dias_bono"].ToString());
                                 auxiliar.BonoTotal = int.Parse(datos.Rows[i]["bono_total"].ToString());
                                 auxiliar.TotalDiasPagados = int.Parse(datos.Rows[i]["total_dias_pagados"].ToString());
-                                auxiliar.TotalDevengando = int.Parse(datos.Rows[i]["total_devengado"].ToString());
+                                auxiliar.TotalDevengando = float.Parse(datos.Rows[i]["total_devengado"].ToString());
                                 auxiliar.DescuentoIncapacidad = int.Parse(datos.Rows[i]["descuento_incapacidad"].ToString());
                                 auxiliar.NominaFiscal = int.Parse(datos.Rows[i]["nomina_fiscal"].ToString());
                                 auxiliar.Multa = int.Parse(datos.Rows[i]["multa"].ToString());
@@ -699,8 +645,10 @@ namespace ProcesadorNominaas
                                 auxiliar.TotalSalidas = float.Parse(datos.Rows[i]["total_salidas"].ToString());
                                 auxiliar.TotalDeducido = float.Parse(datos.Rows[i]["total_deducido"].ToString());
                                 auxiliar.TotalPagado2 = float.Parse(datos.Rows[i]["total_pagado2"].ToString());
+                                auxiliar.DomingoRetardo = datos.Rows[i]["dr"].ToString();
                                 auxiliar.SemanaPagada = datos.Rows[i]["semana_pagada"].ToString();
-                                auxiliar.FechaViernes = datos.Rows[i]["fecha_viernes"].ToString();
+                                DateTime aux = DateTime.Parse(datos.Rows[i]["fecha_viernes"].ToString());
+                                auxiliar.FechaViernes = aux.ToString("yyyy-MM-dd");
 
 
                                 semanasBddAux.Add(auxiliar);
@@ -713,14 +661,29 @@ namespace ProcesadorNominaas
                             Console.WriteLine("Error: " + ex.Message);
                         }
                     }
-                     
+
 
 
                     return semanasBddAux;
                 }
+
+                bool EmpleadoInBdd(Empleado empleadoAux, List<SemanaClass> semanasBddAux, ref SemanaClass semanaBddAux)
+                {
+                    foreach (SemanaClass semana in semanasBddAux)
+                    {
+                        if (semana.IdChecador == empleadoAux.IdChecador)
+                        {
+                            semanaBddAux = semana;
+                            return true;
+                        }
+
+                    }
+                    return false;
+                }
+
             }
-            
-            void ProcesaSemana(Empleado empleado)
+
+            SemanaClass ProcesaSemana(Empleado empleado)
             {
                 Dia viernes = BuscaDia(0, empleado.IdChecador);
                 Dia sabado = BuscaDia(1, empleado.IdChecador);
@@ -747,6 +710,7 @@ namespace ProcesadorNominaas
                 ProcesaPago(aux);
 
                 listaDeSemanas.Add(aux);
+                return aux;
                 //nos falta trabajar la entrada de los domingos. cambiar entrada por entrada domingo.
 
                 void AsignaInfo()
@@ -763,12 +727,12 @@ namespace ProcesadorNominaas
                     aux.SueldoBase = empleado.Sueldo;
                     aux.EntradaDomingo = empleado.EntradaDomingo;
                 }
-                
+
             }
 
             //modifica latera
-                
-                
+
+
 
             void ProcesaPago(SemanaClass semana)
             {
@@ -838,11 +802,11 @@ namespace ProcesadorNominaas
                 }
                 void ProcesaDescanso()
                 {
-                    int total = 0; 
+                    int total = 0;
 
                     if (semana.Lunes == "D")
                         total += 1;
-                    if (semana.Martes == "D" )
+                    if (semana.Martes == "D")
                         total += 1;
 
                     if (semana.Miercoles == "D")
@@ -851,7 +815,7 @@ namespace ProcesadorNominaas
                     if (semana.Jueves == "D")
                         total += 1;
 
-                    if (semana.Viernes == "D" )
+                    if (semana.Viernes == "D")
                         total += 1;
 
                     if (semana.Sabado == "D")
@@ -928,7 +892,7 @@ namespace ProcesadorNominaas
                     aux = aux + semana.MartesPago;
                     aux = aux + semana.MiercolesPago;
                     aux = aux + semana.JuevesPago;
-      
+
                     semana.TotalPagado = aux + descanso;
                 }
                 void ProcesaTotalDevengado()
@@ -953,7 +917,7 @@ namespace ProcesadorNominaas
                 }
                 //FALTAN SALIDAS ETC.
 
-                void ProcesaBono(){
+                void ProcesaBono() {
                     if (Falta())
                     {
                         semana.DiasBono = 0;
@@ -968,7 +932,7 @@ namespace ProcesadorNominaas
                     //PENDIENTE
                     semana.Comida = comida;
                     float aux = 0;
-                    
+
                     //comida por dia trabajado
                     if (semana.Viernes == "1")
                         aux = aux + semana.Comida;
@@ -1014,7 +978,7 @@ namespace ProcesadorNominaas
                     //aqui vamos a cambiar los 100 por variables de la base de datos. tambien hacer con comidas.
                     float retardoAux = 0;
                     float salidaAux = 0;
-                    if(semana.SueldoBase > sueldo_alto)
+                    if (semana.SueldoBase > sueldo_alto)
                     {
                         salidaAux = salida;
                         retardoAux = retardo;
@@ -1103,19 +1067,19 @@ namespace ProcesadorNominaas
                 }
             }
 
-            void ProcesaDia(SemanaClass semana, Dia dia, Empleado empleado){
-                if(dia.Asistencia == null)
+            void ProcesaDia(SemanaClass semana, Dia dia, Empleado empleado) {
+                if (dia.Asistencia == null)
                 {
                     return;
                 }
                 //validar cuando dia sea null
                 DateTime fecha = new DateTime();
                 fecha = DateTime.Parse(dia.Fecha);
-                if(fecha.DayOfWeek.ToString() == "Friday")
+                if (fecha.DayOfWeek.ToString() == "Friday")
                 {
                     //Procesar los dias
                     semana.Viernes = ProcesaAsistencia(dia);
-                    semana.ViernesRetardo =  ProcesaRetardo(dia);    
+                    semana.ViernesRetardo = ProcesaRetardo(dia);
                     semana.ViernesSalida = ProcesaSalida(dia);
                     semana.ViernesTE = ProcesaTE(dia);
                     semana.ViernesPago = ProcesaPagoDiario(dia);
@@ -1169,7 +1133,7 @@ namespace ProcesadorNominaas
                     semana.MiercolesRetardo = ProcesaRetardo(dia);
                     semana.MiercolesSalida = ProcesaSalida(dia);
                     semana.MiercolesTE = ProcesaTE(dia);
-                    semana.MiercolesTotal = ProcesaPagoDiario(dia);  
+                    semana.MiercolesTotal = ProcesaPagoDiario(dia);
                     semana.MiercolesPago = ProcesaTotal(dia);
                 }
                 if (fecha.DayOfWeek.ToString() == "Thursday")
@@ -1269,13 +1233,13 @@ namespace ProcesadorNominaas
 
             List<Empleado> CargaEmpleadosBdd()
             {
-                List < Empleado > aux = new List<Empleado> ();
+                List<Empleado> aux = new List<Empleado>();
                 using (var connection = new MySqlConnection(conexion))
                 {
                     try
                     {
                         connection.Open();
-                        MySqlDataAdapter adaptador = new MySqlDataAdapter("SELECT * FROM " + sucursal + ".Empleados order by nombres", connection);
+                        MySqlDataAdapter adaptador = new MySqlDataAdapter("SELECT * FROM " + sucursal + ".Empleados where fecha_ingreso < '" + semanaViernes + "' order by nombres", connection);
                         DataTable datos = new DataTable();
                         adaptador.Fill(datos);
 
@@ -1296,7 +1260,7 @@ namespace ProcesadorNominaas
                             auxiliar.PerdioDescanso = datos.Rows[i]["perdio_descanso"].ToString();
                             auxiliar.Turno = datos.Rows[i]["turno"].ToString();
                             auxiliar.SueldoImss = float.Parse(datos.Rows[i]["sueldo_imss"].ToString());
-                            
+
                             aux.Add(auxiliar);
                         }
                         connection.Close();
@@ -1364,7 +1328,7 @@ namespace ProcesadorNominaas
                             diaAux.HoraSalida = datos.Rows[i]["hora_salida"].ToString();
                             diaAux.SueldoDiario = float.Parse(datos.Rows[i]["sueldo_diario"].ToString());
 
-                            if(diaAux.Fecha == fechas[0].ToString("yyyy-MM-dd"))
+                            if (diaAux.Fecha == fechas[0].ToString("yyyy-MM-dd"))
                             {
                                 viernes.Add(diaAux);
                             }
@@ -1416,7 +1380,7 @@ namespace ProcesadorNominaas
 
 
             //metodo para obtener las fechas de los dias de la semana actual
-            List<DateTime> ObtenDias(){
+            List<DateTime> ObtenDias(string anterior, int dias) {
 
                 // Obtener la fecha actual
                 DateTime fechaActual = DateTime.Today;
@@ -1431,8 +1395,16 @@ namespace ProcesadorNominaas
                 diaViernes = convierteDia(diaViernes);
                 diaSemanaActual = convierteDia(diaSemanaActual);
 
-
-                int diasAvanzar = (diaViernes - diaSemanaActual);
+                int diasAvanzar = 0;
+                if (anterior == "anterior")
+                {
+                    diasAvanzar = (diaViernes - diaSemanaActual - dias);
+                }
+                else
+                {
+                    diasAvanzar = (diaViernes - diaSemanaActual + dias);
+                }
+                 
 
                 DateTime fechaViernesAnterior = fechaActual.AddDays(diasAvanzar);
 
@@ -1445,7 +1417,7 @@ namespace ProcesadorNominaas
                 DateTime miercoles = martes.AddDays(1);
                 DateTime jueves = miercoles.AddDays(1);
 
-                List <DateTime> aux = new List<DateTime>(); 
+                List<DateTime> aux = new List<DateTime>();
                 aux.Add(viernes);
                 aux.Add(sabado);
                 aux.Add(domingo);
@@ -1470,7 +1442,7 @@ namespace ProcesadorNominaas
                 using (var connection = new MySqlConnection(conexion))
                 {
                     connection.Open();
-                    MySqlCommand  command = new MySqlCommand(query, connection);
+                    MySqlCommand command = new MySqlCommand(query, connection);
                     MySqlDataReader reader = command.ExecuteReader();
 
                     if (reader.Read())
@@ -1494,7 +1466,7 @@ namespace ProcesadorNominaas
             }
         }
 
-        public string ObtenViernesActual()
+        public string ObtenViernes(string anterior, int dias)
         {
             // Obtener la fecha actual
             DateTime fechaActual = DateTime.Today;
@@ -1509,13 +1481,28 @@ namespace ProcesadorNominaas
             diaViernes = convierteDia(diaViernes);
             diaSemanaActual = convierteDia(diaSemanaActual);
 
-
-            int diasAvanzar = (diaViernes - diaSemanaActual);
+            int diasAvanzar = 0;
+            if (anterior == "anterior")
+            {
+                diasAvanzar = (diaViernes - diaSemanaActual - dias);
+            }
+            else
+            {
+                diasAvanzar = (diaViernes - diaSemanaActual + dias);
+            }
 
             DateTime fechaViernesAnterior = fechaActual.AddDays(diasAvanzar);
+            DateTime fechaJueves = fechaViernesAnterior.AddDays(6);
+
+            //aprovecho para sacar el lbl de la semana
+            lblSemanaLabel.Text = fechaViernesAnterior.ToString("dd/MM/yyyy") + " - " + fechaJueves.ToString("dd/MM/yyyy");
+            if (anterior != "anterior")
+                lblSemanaLabel.Text += "  (ACTUAL)";
 
             return fechaViernesAnterior.Year.ToString() + "-" + fechaViernesAnterior.Month.ToString() + "-" + fechaViernesAnterior.Day.ToString();
         }
+
+
         public int convierteDia(int dia)
         {
             if (dia == 1)
@@ -1533,6 +1520,99 @@ namespace ProcesadorNominaas
             if (dia == 0)
                 return 3;
             return 0;
+        }
+
+        public bool InsertaSemana(SemanaClass semana)
+        {
+            string sqlString = "INSERT INTO " + sucursal + ".Semanas (id_checador,id_empleado,nombre,sueldo_imss,turno,entrada_domingo,entrada,salida,sueldo_base,bono,porcentaje_te,dia_descanso,v,vr,vs,dte,mte,jte,cantidad_abono,vte,s,sr,ss,ste,d,dr,ds,l,lr,ls,lte,m,mr,ms,x,xr,xs,xte,j,jr,js,descanso,descanso_t,dias_descanso,incapacidad,vacaciones,dias_trabajados,dias_bono,bono_total,total_dias_pagados,total_pagado,total_devengado,descuento_incapacidad,nomina_fiscal,multa,multa2,cantidad_prestamo,saldo_prestamo,cantidad_herramienta,abono_herramienta,gorra,trapo,total_uniformes,total_retardos,total_salidas,total_deducido,total_pagado2,fecha_viernes,semana_pagada\r\n) VALUES (";
+            sqlString = sqlString + "'" + semana.IdChecador.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Id.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Nombre.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.SueldoImss.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Turno.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.EntradaDomingo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Entrada.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Salida.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.SueldoBase.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Bono.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.PorcentajeTe.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Descanso.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Viernes.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.ViernesRetardo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.ViernesSalida.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.DomingoTE.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.MartesTE.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.JuevesTE.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.CantidadAbono.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.ViernesTE.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Sabado.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.SabadoRetardo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.SabadoSalida.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.DomingoTE.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Domingo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.DomingoRetardo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.DomingoSalida.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Lunes.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.LunesRetardo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.LunesSalida.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.LunesTE.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Martes.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.MartesRetardo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.MartesSalida.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Miercoles.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.MiercolesRetardo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.MiercolesSalida.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.MiercolesTE.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Jueves.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.JuevesRetardo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.JuevesSalida.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Descanso2.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.DescansoT.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.DiasDescanso.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Incapacidad.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Vacaciones.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.DiasTrabajados.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.DiasBono.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.BonoTotal.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.TotalDiasPagados.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.TotalPagado.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.TotalDevengando.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.DescuentoIncapacidad.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.NominaFiscal.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Multa.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Multa2.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.CantidadPrestamo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.SaldoPrestamo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.CantidadHerramienta.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.AbonoHerramienta.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Gorra.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.Trapo.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.TotalUniformes.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.TotalRetardos.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.TotalSalidas.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.TotalDeducido.ToString() + "'" + ",";
+            sqlString = sqlString + "'" + semana.TotalPagado2.ToString() + "'" + ",";
+            //revisar!!
+            sqlString = sqlString + "'" + semanaViernes + "'" + ",";
+            sqlString = sqlString + "'" + "NO" + "'"; // Último valor, no lleva coma al final
+            sqlString = sqlString + ");"; // Cerramos la sentencia SQL
+            using (var connection = new MySqlConnection(conexion))
+            {
+                try
+                {
+                    connection.Open();
+
+                    MySqlCommand comando = new MySqlCommand(sqlString, connection);
+                    comando.ExecuteNonQuery();
+                    connection.Close();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ocurrio un error contactate con un administrador (" + ex.ToString() + ")");
+                    return false;
+                }
+            }
         }
     }
 }
