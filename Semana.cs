@@ -1,5 +1,6 @@
 ﻿using Irony.Parsing;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Relational;
 using NPOI.HSSF.Record.Chart;
 using NPOI.OpenXmlFormats.Dml;
 using NPOI.OpenXmlFormats.Dml.Chart;
@@ -13,6 +14,7 @@ using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Drawing;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +45,9 @@ namespace ProcesadorNominaas
         //variable para ver cuantos dias le voy a restar o sumar al viernes.
         int dias = 0;
 
+        //variable que controla la edicion del data grid.
+        bool modifica = false;
+
         public Semana(string sucursal, string anterior, int dias)
         {
             InitializeComponent();
@@ -51,50 +56,79 @@ namespace ProcesadorNominaas
             this.dias = dias;
         }
 
+        //semana auxiliar para modificar. 
+        SemanaClass semanaAuxiliar = new SemanaClass();
+        DataGridViewRow filaAuxiliar = new DataGridViewRow();
+
+
+
+
         private void DataGridSemana_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             // Verifica si el clic ocurrió en la columna de botón
             if (e.ColumnIndex == DataGridSemana.Columns["Modificar"].Index && e.RowIndex >= 0)
             {
-
+                semanaAuxiliar = null;
+                filaAuxiliar = null;
                 MessageBox.Show("Introduce la contraseña" + e.RowIndex);
 
 
-
+                /*
+                // Haz que las celdas específicas sean editables
                 string[] editableColumns = { "V", "VR", "VS", "VTE", "S", "SR", "SS", "STE", "D", "DR", "DS", "DTE", "L", "LR", "LS", "LTE", "M", "MR", "MS", "MTE", "X", "XR", "XS", "XTE", "J", "JR", "JS", "JTE" }; // Índices de columnas que deseas hacer editables
 
-                // Haz que las celdas específicas sean editables
+     
                 foreach (string columnIndex in editableColumns)
                 {
                     DataGridSemana.Rows[e.RowIndex].Cells[columnIndex].ReadOnly = false;
                 }
+                */
+
+                //guardo el estado de la fila por si se cancela la modificación
+                GuardaSemana(DataGridSemana.Rows[e.RowIndex]);
+
                 DataGridViewButtonCell c = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Modificar"];
-                //cambiar color.
+
+
+
+                DataGridSemana.Rows[e.RowIndex].ReadOnly = false;
+                modifica = true;
                 c.Style.ForeColor = Color.Black;
-                c.Style.BackColor = Color.PaleGreen;
-                c = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Pagado"];
-                //cambiar color.
-                c.Style.ForeColor = Color.Black;
-                c.Style.BackColor = Color.PaleVioletRed;
-                DataGridSemana.Refresh();
+                c.Style.BackColor = Color.Yellow;
 
             }
             // Verifica si el clic ocurrió en la columna de botón
             if (e.ColumnIndex == DataGridSemana.Columns["Guardar"].Index && e.RowIndex >= 0)
             {
 
-                MessageBox.Show("Se guardaron los cambios");
+                //verificamos que haya algo que guardar.
+                if(HayModificaciones()){
+                    if(Actualiza(DataGridSemana.Rows[e.RowIndex]) == false)
+                        MessageBox.Show("Ocurrió un error contacta un administrador.");
+                    else
+                        MessageBox.Show("Se guardo correctamente.");
+                    
 
-                DataGridSemana.Rows[e.RowIndex].ReadOnly = false;
+                }
+                else
+                {
+                    MessageBox.Show("No hay modificaciones para guardar.");
+                }
+                DataGridSemana.Rows[e.RowIndex].ReadOnly = true;
+                DataGridViewButtonCell c = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Modificar"];
+                c.Style.ForeColor = Color.Navy;
+                c.Style.BackColor = Color.Gainsboro;
+                modifica = false;
                 DataGridSemana.Refresh();
-
             }
             if (e.ColumnIndex == DataGridSemana.Columns["Cancelar"].Index && e.RowIndex >= 0)
             {
-
+                DataGridViewButtonCell c = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Modificar"];
+                c.Style.ForeColor = Color.Navy;
+                c.Style.BackColor = Color.Gainsboro;
                 MessageBox.Show("Se cancelaron los cambios");
-
-                DataGridSemana.Rows[e.RowIndex].ReadOnly = false;
+                RegresaValores(DataGridSemana.Rows[e.RowIndex]);
+                DataGridSemana.Rows[e.RowIndex].ReadOnly = true;
                 DataGridSemana.Refresh();
 
             }
@@ -130,6 +164,33 @@ namespace ProcesadorNominaas
                 }
  
             }
+            void GuardaSemana( DataGridViewRow original)
+            {
+                filaAuxiliar = (DataGridViewRow)original.Clone();
+                for (int i = 0; i < original.Cells.Count; i++)
+                {
+                    filaAuxiliar.Cells[i].Value = original.Cells[i].Value;
+                }
+            }
+
+
+            void RegresaValores(DataGridViewRow original)
+            {
+                //regreso mis valores con el auxiliar
+                for (int i = 0; i < original.Cells.Count; i++)
+                {
+                    original.Cells[i].Value = filaAuxiliar.Cells[i].Value;
+                }
+            }
+
+            bool HayModificaciones()
+            {
+                DataGridViewButtonCell c = (DataGridViewButtonCell)DataGridSemana.Rows[e.RowIndex].Cells["Modificar"];
+                if (c.Style.BackColor == Color.Yellow)
+                    return true;
+                else
+                    return false;
+            }
 
             bool FuePagado()
             {
@@ -137,9 +198,7 @@ namespace ProcesadorNominaas
                 if (c.Style.BackColor == Color.PaleGreen)
                     return true;
                 else
-                {
                     return false;
-                }
             }
 
             bool EsJueves()
@@ -150,12 +209,102 @@ namespace ProcesadorNominaas
                 return false;
             }
 
+            bool Actualiza(DataGridViewRow row)
+            {
+                string sqlString = "UPDATE " + sucursal + ".Semanas SET ";
+                sqlString = sqlString + "id_empleado = '" + row.Cells["Id"].Value.ToString() + "', ";
+                sqlString = sqlString + "nombre = '" + row.Cells["Nombre"].Value.ToString() + "', ";
+                sqlString = sqlString + "sueldo_imss = '" + row.Cells["SueldoImss"].Value.ToString() + "', ";
+                sqlString = sqlString + "turno = '" + row.Cells["Turno"].Value.ToString() + "', ";
+                sqlString = sqlString + "entrada_domingo = '" + row.Cells["EntradaDomingo"].Value.ToString() + "', ";
+                sqlString = sqlString + "entrada = '" + row.Cells["Entrada"].Value.ToString() + "', ";
+                sqlString = sqlString + "salida = '" + row.Cells["Salida"].Value.ToString() + "', ";
+                sqlString = sqlString + "sueldo_base = '" + row.Cells["SueldoBase"].Value.ToString() + "', ";
+                sqlString = sqlString + "bono = '" + row.Cells["Bono"].Value.ToString() + "', ";
+                sqlString = sqlString + "porcentaje_te = '" + row.Cells["%TE"].Value.ToString() + "', ";
+                sqlString = sqlString + "dia_descanso = '" + row.Cells["Dia Descanso"].Value.ToString() + "', ";
+                sqlString = sqlString + "v = '" + row.Cells["V"].Value.ToString() + "', ";
+                sqlString = sqlString + "vr = '" + row.Cells["VR"].Value.ToString() + "', ";
+                sqlString = sqlString + "vs = '" + row.Cells["VS"].Value.ToString() + "', ";
+                sqlString = sqlString + "dte = '" + row.Cells["DTE"].Value.ToString() + "', ";
+                sqlString = sqlString + "mte = '" + row.Cells["MTE"].Value.ToString() + "', ";
+                sqlString = sqlString + "jte = '" + row.Cells["JTE"].Value.ToString() + "', ";
+                sqlString = sqlString + "cantidad_abono = '" + row.Cells["CantidadAbono"].Value.ToString() + "', ";
+                sqlString = sqlString + "vte = '" + row.Cells["VTE"].Value.ToString() + "', ";
+                sqlString = sqlString + "s = '" + row.Cells["S"].Value.ToString() + "', ";
+                sqlString = sqlString + "sr = '" + row.Cells["SR"].Value.ToString() + "', ";
+                sqlString = sqlString + "ss = '" + row.Cells["SS"].Value.ToString() + "', ";
+                sqlString = sqlString + "ste = '" + row.Cells["STE"].Value.ToString() + "', ";
+                sqlString = sqlString + "d = '" + row.Cells["D"].Value.ToString() + "', ";
+                sqlString = sqlString + "dr = '" + row.Cells["DR"].Value.ToString() + "', ";
+                sqlString = sqlString + "ds = '" + row.Cells["DS"].Value.ToString() + "', ";
+                sqlString = sqlString + "l = '" + row.Cells["L"].Value.ToString() + "', ";
+                sqlString = sqlString + "lr = '" + row.Cells["LR"].Value.ToString() + "', ";
+                sqlString = sqlString + "ls = '" + row.Cells["LS"].Value.ToString() + "', ";
+                sqlString = sqlString + "lte = '" + row.Cells["LTE"].Value.ToString() + "', ";
+                sqlString = sqlString + "m = '" + row.Cells["M"].Value.ToString() + "', ";
+                sqlString = sqlString + "mr = '" + row.Cells["MR"].Value.ToString() + "', ";
+                sqlString = sqlString + "ms = '" + row.Cells["MS"].Value.ToString() + "', ";
+                sqlString = sqlString + "x = '" + row.Cells["X"].Value.ToString() + "', ";
+                sqlString = sqlString + "xr = '" + row.Cells["XR"].Value.ToString() + "', ";
+                sqlString = sqlString + "xs = '" + row.Cells["XS"].Value.ToString() + "', ";
+                sqlString = sqlString + "xte = '" + row.Cells["XTE"].Value.ToString() + "', ";
+                sqlString = sqlString + "j = '" + row.Cells["J"].Value.ToString() + "', ";
+                sqlString = sqlString + "jr = '" + row.Cells["JR"].Value.ToString() + "', ";
+                sqlString = sqlString + "js = '" + row.Cells["JS"].Value.ToString() + "', ";
+                sqlString = sqlString + "descanso = '" + row.Cells["Descanso"].Value.ToString() + "', ";
+                sqlString = sqlString + "descanso_t = '" + row.Cells["DescansoT"].Value.ToString() + "', ";
+                sqlString = sqlString + "dias_descanso = '" + row.Cells["DiasDescanso"].Value.ToString() + "', ";
+                sqlString = sqlString + "incapacidad = '" + row.Cells["Incapacidad"].Value.ToString() + "', ";
+                sqlString = sqlString + "vacaciones = '" + row.Cells["Vacaciones"].Value.ToString() + "', ";
+                sqlString = sqlString + "dias_trabajados = '" + row.Cells["DiasTrabajados"].Value.ToString() + "', ";
+                sqlString = sqlString + "dias_bono = '" + row.Cells["DiasBono"].Value.ToString() + "', ";
+                sqlString = sqlString + "bono_total = '" + row.Cells["BonoTotal"].Value.ToString() + "', ";
+                sqlString = sqlString + "total_dias_pagados = '" + row.Cells["TotalDiasPagados"].Value.ToString() + "', ";
+                sqlString = sqlString + "total_pagado = '" + row.Cells["TotalPagado"].Value.ToString() + "', ";
+                sqlString = sqlString + "total_devengado = '" + row.Cells["TotalDevengando"].Value.ToString() + "', ";
+                sqlString = sqlString + "descuento_incapacidad = '" + row.Cells["DescuentoIncapacidad"].Value.ToString() + "', ";
+                sqlString = sqlString + "nomina_fiscal = '" + row.Cells["NominaFiscal"].Value.ToString() + "', ";
+                sqlString = sqlString + "multa = '" + row.Cells["Multa"].Value.ToString() + "', ";
+                sqlString = sqlString + "multa2 = '" + row.Cells["Multa2"].Value.ToString() + "', ";
+                sqlString = sqlString + "cantidad_prestamo = '" + row.Cells["CantidadPrestamo"].Value.ToString() + "', ";
+                sqlString = sqlString + "saldo_prestamo = '" + row.Cells["SaldoPrestamo"].Value.ToString() + "', ";
+                sqlString = sqlString + "cantidad_herramienta = '" + row.Cells["CantidadHerramienta"].Value.ToString() + "', ";
+                sqlString = sqlString + "abono_herramienta = '" + row.Cells["AbonoHerramienta"].Value.ToString() + "', ";
+                sqlString = sqlString + "gorra = '" + row.Cells["Gorra"].Value.ToString() + "', ";
+                sqlString = sqlString + "trapo = '" + row.Cells["Trapo"].Value.ToString() + "', ";
+                sqlString = sqlString + "total_uniformes = '" + row.Cells["TotalUniformes"].Value.ToString() + "', ";
+                sqlString = sqlString + "total_retardos = '" + row.Cells["TotalRetardos"].Value.ToString() + "', ";
+                sqlString = sqlString + "total_salidas = '" + row.Cells["TotalSalidas"].Value.ToString() + "', ";
+                sqlString = sqlString + "total_deducido = '" + row.Cells["TotalDeducido"].Value.ToString() + "', ";
+                sqlString = sqlString + "total_pagado2 = '" + row.Cells["TotalPagado2"].Value.ToString() + "', ";
+                sqlString = sqlString + "fecha_viernes = '" + semanaViernes + "', ";
+                sqlString = sqlString + "semana_pagada = 'SI' ";
+                sqlString = sqlString + "WHERE id_checador = " + row.Cells["Id_C"].Value.ToString() + " AND fecha_viernes = '" + semanaViernes + "' and id > 0;";
+                using (var connection = new MySqlConnection(conexion))
+                {
+                    try
+                    {
+                        connection.Open();
+
+                        MySqlCommand comando = new MySqlCommand(sqlString, connection);
+                        comando.ExecuteNonQuery();
+                        connection.Close();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ocurrio un error al pagar, intenta de nuevo o contactate con un administrador (" + ex.ToString() + ")");
+                        return false;
+                    }
+                }
+            }
             bool InsertaEmpleado(DataGridViewRow row)
             {
 
                 if (YaEstaEnBdd() == true)
                 {
-                    if (Actualiza())
+                    if (Actualiza(row))
                         return true;
                     else
                         return false;
@@ -262,96 +411,7 @@ namespace ProcesadorNominaas
                     }
                 }
 
-                bool Actualiza()
-                {
-                    string sqlString = "UPDATE " + sucursal + ".Semanas SET ";
-                    sqlString = sqlString + "id_empleado = '" + row.Cells["Id"].Value.ToString() + "', ";
-                    sqlString = sqlString + "nombre = '" + row.Cells["Nombre"].Value.ToString() + "', ";
-                    sqlString = sqlString + "sueldo_imss = '" + row.Cells["SueldoImss"].Value.ToString() + "', ";
-                    sqlString = sqlString + "turno = '" + row.Cells["Turno"].Value.ToString() + "', ";
-                    sqlString = sqlString + "entrada_domingo = '" + row.Cells["EntradaDomingo"].Value.ToString() + "', ";
-                    sqlString = sqlString + "entrada = '" + row.Cells["Entrada"].Value.ToString() + "', ";
-                    sqlString = sqlString + "salida = '" + row.Cells["Salida"].Value.ToString() + "', ";
-                    sqlString = sqlString + "sueldo_base = '" + row.Cells["SueldoBase"].Value.ToString() + "', ";
-                    sqlString = sqlString + "bono = '" + row.Cells["Bono"].Value.ToString() + "', ";
-                    sqlString = sqlString + "porcentaje_te = '" + row.Cells["%TE"].Value.ToString() + "', ";
-                    sqlString = sqlString + "dia_descanso = '" + row.Cells["Dia Descanso"].Value.ToString() + "', ";
-                    sqlString = sqlString + "v = '" + row.Cells["V"].Value.ToString() + "', ";
-                    sqlString = sqlString + "vr = '" + row.Cells["VR"].Value.ToString() + "', ";
-                    sqlString = sqlString + "vs = '" + row.Cells["VS"].Value.ToString() + "', ";
-                    sqlString = sqlString + "dte = '" + row.Cells["DTE"].Value.ToString() + "', ";
-                    sqlString = sqlString + "mte = '" + row.Cells["MTE"].Value.ToString() + "', ";
-                    sqlString = sqlString + "jte = '" + row.Cells["JTE"].Value.ToString() + "', ";
-                    sqlString = sqlString + "cantidad_abono = '" + row.Cells["CantidadAbono"].Value.ToString() + "', ";
-                    sqlString = sqlString + "vte = '" + row.Cells["VTE"].Value.ToString() + "', ";
-                    sqlString = sqlString + "s = '" + row.Cells["S"].Value.ToString() + "', ";
-                    sqlString = sqlString + "sr = '" + row.Cells["SR"].Value.ToString() + "', ";
-                    sqlString = sqlString + "ss = '" + row.Cells["SS"].Value.ToString() + "', ";
-                    sqlString = sqlString + "ste = '" + row.Cells["STE"].Value.ToString() + "', ";
-                    sqlString = sqlString + "d = '" + row.Cells["D"].Value.ToString() + "', ";
-                    sqlString = sqlString + "dr = '" + row.Cells["DR"].Value.ToString() + "', ";
-                    sqlString = sqlString + "ds = '" + row.Cells["DS"].Value.ToString() + "', ";
-                    sqlString = sqlString + "l = '" + row.Cells["L"].Value.ToString() + "', ";
-                    sqlString = sqlString + "lr = '" + row.Cells["LR"].Value.ToString() + "', ";
-                    sqlString = sqlString + "ls = '" + row.Cells["LS"].Value.ToString() + "', ";
-                    sqlString = sqlString + "lte = '" + row.Cells["LTE"].Value.ToString() + "', ";
-                    sqlString = sqlString + "m = '" + row.Cells["M"].Value.ToString() + "', ";
-                    sqlString = sqlString + "mr = '" + row.Cells["MR"].Value.ToString() + "', ";
-                    sqlString = sqlString + "ms = '" + row.Cells["MS"].Value.ToString() + "', ";
-                    sqlString = sqlString + "x = '" + row.Cells["X"].Value.ToString() + "', ";
-                    sqlString = sqlString + "xr = '" + row.Cells["XR"].Value.ToString() + "', ";
-                    sqlString = sqlString + "xs = '" + row.Cells["XS"].Value.ToString() + "', ";
-                    sqlString = sqlString + "xte = '" + row.Cells["XTE"].Value.ToString() + "', ";
-                    sqlString = sqlString + "j = '" + row.Cells["J"].Value.ToString() + "', ";
-                    sqlString = sqlString + "jr = '" + row.Cells["JR"].Value.ToString() + "', ";
-                    sqlString = sqlString + "js = '" + row.Cells["JS"].Value.ToString() + "', ";
-                    sqlString = sqlString + "descanso = '" + row.Cells["Descanso"].Value.ToString() + "', ";
-                    sqlString = sqlString + "descanso_t = '" + row.Cells["DescansoT"].Value.ToString() + "', ";
-                    sqlString = sqlString + "dias_descanso = '" + row.Cells["DiasDescanso"].Value.ToString() + "', ";
-                    sqlString = sqlString + "incapacidad = '" + row.Cells["Incapacidad"].Value.ToString() + "', ";
-                    sqlString = sqlString + "vacaciones = '" + row.Cells["Vacaciones"].Value.ToString() + "', ";
-                    sqlString = sqlString + "dias_trabajados = '" + row.Cells["DiasTrabajados"].Value.ToString() + "', ";
-                    sqlString = sqlString + "dias_bono = '" + row.Cells["DiasBono"].Value.ToString() + "', ";
-                    sqlString = sqlString + "bono_total = '" + row.Cells["BonoTotal"].Value.ToString() + "', ";
-                    sqlString = sqlString + "total_dias_pagados = '" + row.Cells["TotalDiasPagados"].Value.ToString() + "', ";
-                    sqlString = sqlString + "total_pagado = '" + row.Cells["TotalPagado"].Value.ToString() + "', ";
-                    sqlString = sqlString + "total_devengado = '" + row.Cells["TotalDevengando"].Value.ToString() + "', ";
-                    sqlString = sqlString + "descuento_incapacidad = '" + row.Cells["DescuentoIncapacidad"].Value.ToString() + "', ";
-                    sqlString = sqlString + "nomina_fiscal = '" + row.Cells["NominaFiscal"].Value.ToString() + "', ";
-                    sqlString = sqlString + "multa = '" + row.Cells["Multa"].Value.ToString() + "', ";
-                    sqlString = sqlString + "multa2 = '" + row.Cells["Multa2"].Value.ToString() + "', ";
-                    sqlString = sqlString + "cantidad_prestamo = '" + row.Cells["CantidadPrestamo"].Value.ToString() + "', ";
-                    sqlString = sqlString + "saldo_prestamo = '" + row.Cells["SaldoPrestamo"].Value.ToString() + "', ";
-                    sqlString = sqlString + "cantidad_herramienta = '" + row.Cells["CantidadHerramienta"].Value.ToString() + "', ";
-                    sqlString = sqlString + "abono_herramienta = '" + row.Cells["AbonoHerramienta"].Value.ToString() + "', ";
-                    sqlString = sqlString + "gorra = '" + row.Cells["Gorra"].Value.ToString() + "', ";
-                    sqlString = sqlString + "trapo = '" + row.Cells["Trapo"].Value.ToString() + "', ";
-                    sqlString = sqlString + "total_uniformes = '" + row.Cells["TotalUniformes"].Value.ToString() + "', ";
-                    sqlString = sqlString + "total_retardos = '" + row.Cells["TotalRetardos"].Value.ToString() + "', ";
-                    sqlString = sqlString + "total_salidas = '" + row.Cells["TotalSalidas"].Value.ToString() + "', ";
-                    sqlString = sqlString + "total_deducido = '" + row.Cells["TotalDeducido"].Value.ToString() + "', ";
-                    sqlString = sqlString + "total_pagado2 = '" + row.Cells["TotalPagado2"].Value.ToString() + "', ";
-                    sqlString = sqlString + "fecha_viernes = '" + semanaViernes + "', ";
-                    sqlString = sqlString + "semana_pagada = 'SI' ";
-                    sqlString = sqlString + "WHERE id_checador = " + row.Cells["Id_C"].Value.ToString() + " AND fecha_viernes = '" + semanaViernes + "' and id > 0;";
-                    using (var connection = new MySqlConnection(conexion))
-                    {
-                        try
-                        {
-                            connection.Open();
-
-                            MySqlCommand comando = new MySqlCommand(sqlString, connection);
-                            comando.ExecuteNonQuery();
-                            connection.Close();
-                            return true;
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Ocurrio un error al pagar, intenta de nuevo o contactate con un administrador (" + ex.ToString() + ")");
-                            return false;
-                        }
-                    }
-                }
+                
 
                 bool YaEstaEnBdd()
                 {
@@ -1768,6 +1828,31 @@ namespace ProcesadorNominaas
                     return false;
                 }
             }
+        }
+
+        private void DataGridSemana_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+        }
+
+        private void DataGridSemana_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if(modifica == true)
+            {
+                string[] editableColumns = { "V", "VR", "VS", "VTE", "S", "SR", "SS", "STE", "D", "DR", "DS", "DTE", "L", "LR", "LS", "LTE", "M", "MR", "MS", "MTE", "X", "XR", "XS", "XTE", "J", "JR", "JS", "JTE" }; 
+
+                
+                foreach (string columnIndex in editableColumns)
+                {
+                    if (e.ColumnIndex == DataGridSemana.Columns[columnIndex].Index && e.RowIndex >= 0)
+                    {
+
+                        MessageBox.Show("Valido");
+
+                    }
+
+                }
+            }
+
         }
     }
 }

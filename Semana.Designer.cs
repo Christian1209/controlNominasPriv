@@ -43,13 +43,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DataGridSemana.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.DataGridSemana.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DataGridSemana.Location = new System.Drawing.Point(3, 60);
+            this.DataGridSemana.Location = new System.Drawing.Point(3, 59);
             this.DataGridSemana.Name = "DataGridSemana";
             this.DataGridSemana.RowHeadersWidth = 51;
             this.DataGridSemana.RowTemplate.Height = 24;
             this.DataGridSemana.Size = new System.Drawing.Size(1495, 664);
             this.DataGridSemana.TabIndex = 1;
             this.DataGridSemana.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridSemana_CellContentClick);
+            this.DataGridSemana.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridSemana_CellEnter);
+            this.DataGridSemana.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridSemana_CellValueChanged);
             // 
             // label1
             // 
