@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using static NPOI.HSSF.Util.HSSFColor;
 
 namespace ProcesadorNominaas
@@ -59,7 +60,8 @@ namespace ProcesadorNominaas
         //semana auxiliar para modificar. 
         SemanaClass semanaAuxiliar = new SemanaClass();
         DataGridViewRow filaAuxiliar = new DataGridViewRow();
-
+        //Aqui se guarda la semana de cada empleado.
+        List<SemanaClass> listaDeSemanas = new List<SemanaClass>();
 
 
 
@@ -545,8 +547,7 @@ namespace ProcesadorNominaas
             //aqui voy a guardar las fechas de la semana para consultarlas en la bdd
             List<DateTime> fechasDias = new List<DateTime>();
 
-            //Aqui se guarda la semana de cada empleado.
-            List<SemanaClass> listaDeSemanas = new List<SemanaClass>();
+
 
             //Aqui se guardan los empleados de la bdd
             List<Empleado> listaDeEmpleados = new List<Empleado>();
@@ -1845,14 +1846,29 @@ namespace ProcesadorNominaas
                 {
                     if (e.ColumnIndex == DataGridSemana.Columns[columnIndex].Index && e.RowIndex >= 0)
                     {
-
+                        //DataGridSemana.Rows[e.RowIndex].Cells["V"].Value = "5";
+                        ModificaEmpleado(int.Parse(DataGridSemana.Rows[e.RowIndex].Cells["Id_C"].Value.ToString()));
                         MessageBox.Show("Valido");
-
                     }
-
                 }
             }
 
+
+            void ModificaEmpleado(int id)
+            {
+
+                //vamos a modificar la semana, luego a reprocesarla, y por ultimo a pasarla al datagrid.b 
+                foreach (SemanaClass semana in listaDeSemanas)
+                {
+                    if (semana.IdChecador == id)
+                    {
+                        semana.Viernes = "Z";
+                        break;
+                    }
+                }
+            }
         }
+
+
     }
 }
