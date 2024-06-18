@@ -60,7 +60,7 @@ namespace ProcesadorNominaas
         public string Salida { get => salida; set => salida = value; }
         public string EntradaDomingo { get => entradaDomingo; set => entradaDomingo = value; }
         public float SueldoImss { get => sueldoImss; set => sueldoImss = value; }
-        public string Turno { get => turno; set => turno = value; } 
+        public string Turno { get => turno; set => turno = value; }
         public float Sueldo { get => sueldo; set => sueldo = value; }
         public int Bono { get => bono; set => bono = value; }
         public int Porcentaje { get => porcentaje; set => porcentaje = value; }

@@ -3,40 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|c:\\users\\misa_\\onedrive\\escritorio\\controlnominasv10\\semana.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:semana.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\semanaclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:semanaclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\contenedornomina.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:contenedornomina.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\semanahistorico.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:semanahistorico.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|c:\\users\\misa_\\onedrive\\escritorio\\controlnominasv10\\semana.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:semana.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\semanahistorico.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:semanahistorico.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\contenedornomina.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:contenedornomina.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\ventanaaguinaldos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:ventanaaguinaldos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|c:\\users\\misa_\\onedrive\\escritorio\\controlnominasv10\\empleado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C6224A0B-CADD-4487-AD18-185777404A49}|ProcesadorNominaas.csproj|solutionrelative:empleado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,139 +14,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ContenedorNomina.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\ContenedorNomina.cs",
-              "RelativeDocumentMoniker": "ContenedorNomina.cs",
-              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\ContenedorNomina.cs [Dise\u00F1o]",
-              "RelativeToolTip": "ContenedorNomina.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-16T05:14:43.874Z",
-              "IsPinned": true,
-              "EditorCaption": " [Dise\u00F1o]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "VentanaAguinaldos.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\VentanaAguinaldos.cs",
-              "RelativeDocumentMoniker": "VentanaAguinaldos.cs",
-              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\VentanaAguinaldos.cs [Dise\u00F1o]",
-              "RelativeToolTip": "VentanaAguinaldos.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-06T07:24:03.626Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "SemanaHistorico.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\SemanaHistorico.cs",
-              "RelativeDocumentMoniker": "SemanaHistorico.cs",
-              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\SemanaHistorico.cs [Dise\u00F1o]",
-              "RelativeToolTip": "SemanaHistorico.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-09T05:02:14.071Z",
-              "EditorCaption": " [Dise\u00F1o]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Semana.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\Semana.cs",
-              "RelativeDocumentMoniker": "Semana.cs",
-              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\Semana.cs [Dise\u00F1o]",
-              "RelativeToolTip": "Semana.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-03T19:18:30.151Z",
-              "EditorCaption": " [Dise\u00F1o]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Form1.cs",
-              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\Form1.cs",
-              "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\Form1.cs",
-              "RelativeToolTip": "Form1.cs",
-              "ViewState": "AQIAAKsAAAAAAAAAAAAuwL4AAAANAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-02T22:33:39.982Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Orientation": 0,
-      "VerticalTabListWidth": 256,
-      "FloatingWindowState": {
-        "Id": "9692e3c7-7477-4cb4-855c-2aa1cfb076da",
-        "Display": 1,
-        "X": 1226,
-        "Y": 17,
-        "Width": 1015,
-        "Height": 842,
-        "WindowState": 0
-      },
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
           "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "SemanaClass.cs",
-              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\SemanaClass.cs",
-              "RelativeDocumentMoniker": "SemanaClass.cs",
-              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\SemanaClass.cs",
-              "RelativeToolTip": "SemanaClass.cs",
-              "ViewState": "AQIAALEAAAAAAAAAAAAAANEAAAAAAAAA",
+              "DocumentIndex": 0,
+              "Title": "Empleado.cs",
+              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\Empleado.cs",
+              "RelativeDocumentMoniker": "Empleado.cs",
+              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\Empleado.cs",
+              "RelativeToolTip": "Empleado.cs",
+              "ViewState": "AQIAAE8AAAAAAAAAAAAAAD4AAABDAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-09T06:54:10.342Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ContenedorNomina.cs",
-              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\ContenedorNomina.cs",
-              "RelativeDocumentMoniker": "ContenedorNomina.cs",
-              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\ContenedorNomina.cs",
-              "RelativeToolTip": "ContenedorNomina.cs",
-              "ViewState": "AQIAAFIAAAAAAAAAAAAAAEgAAAAMAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-09T04:58:28.51Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "SemanaHistorico.cs",
-              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\SemanaHistorico.cs",
-              "RelativeDocumentMoniker": "SemanaHistorico.cs",
-              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\SemanaHistorico.cs",
-              "RelativeToolTip": "SemanaHistorico.cs",
-              "ViewState": "AQIAAC8AAAAAAAAAAAAAAEMAAAAdAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-09T05:52:58.557Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Semana.cs",
-              "DocumentMoniker": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\Semana.cs",
-              "RelativeDocumentMoniker": "Semana.cs",
-              "ToolTip": "C:\\Users\\misa_\\OneDrive\\Escritorio\\ControlNominasV10\\Semana.cs",
-              "RelativeToolTip": "Semana.cs",
-              "ViewState": "AQIAALUAAAAAAAAAAAAAAEcHAAAVAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-03T19:18:32.312Z",
+              "WhenOpened": "2024-06-13T07:56:14.513Z",
               "EditorCaption": ""
             }
           ]
